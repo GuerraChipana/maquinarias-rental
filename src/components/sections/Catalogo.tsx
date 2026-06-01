@@ -1,8 +1,18 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, PackageX, Sparkles, XCircle, SlidersHorizontal } from 'lucide-react'
+import { motion, AnimatePresence, type Variants } from 'framer-motion'
+import { 
+  Search, 
+  X, 
+  SlidersHorizontal, 
+  AlertTriangle, 
+  Truck, 
+  Settings2, 
+  Barcode, 
+  Activity,
+  Cpu
+} from 'lucide-react'
 import MachineCard from '@/components/ui/MachineCard'
 import { maquinarias } from '@/data/maquinarias'
 import { useCotizacion } from '@/components/cotizacion/ModalCotizacion' 
@@ -10,25 +20,30 @@ import type { Maquina } from '@/types'
 
 const TODAS = 'Todas'
 
-/* ── Variantes para animación en cascada (Stagger) ── */
-const containerVariants = {
+/* ── Variantes para animación Mecánica (Peso Pesado) ── */
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 }
   }
 }
 
-const pillVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring"as const, stiffness: 300, damping: 24 } }
+const dropVariants: Variants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 20, mass: 1.5 } 
+  }
 }
 
 export default function Catalogo() {
-  const [filtro, setFiltro]     = useState<string>(TODAS)
+  const [filtro, setFiltro] = useState<string>(TODAS)
   const [busqueda, setBusqueda] = useState('')
   const [isFocused, setIsFocused] = useState(false)
-  const { openModal }           = useCotizacion()
+  const { openModal } = useCotizacion()
 
   const categorias = useMemo(() => {
     const cats = Array.from(new Set(maquinarias.map(m => m.categoria)))
@@ -37,7 +52,7 @@ export default function Catalogo() {
 
   const maquinasFiltradas = useMemo(() => {
     return maquinarias.filter(m => {
-      const matchCat    = filtro === TODAS || m.categoria === filtro
+      const matchCat = filtro === TODAS || m.categoria === filtro
       const matchSearch = m.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
                           m.descripcion.toLowerCase().includes(busqueda.toLowerCase())
       return matchCat && matchSearch
@@ -51,137 +66,123 @@ export default function Catalogo() {
   return (
     <section
       id="catalogo"
-      className="relative w-full bg-[#E8EDF2] pt-36 pb-36 md:pt-48 md:pb-48 px-5 lg:px-12 xl:px-20 min-h-screen overflow-hidden"
+      className="relative w-full bg-[#eef1f5] pt-32 pb-36 md:pt-44 md:pb-48 px-5 lg:px-12 xl:px-20 min-h-screen overflow-hidden font-[Montserrat,sans-serif]"
     >
-      {/* ── 1. TRANSICIONES GEOMÉTRICAS PERFECTAS ───────────────── */}
-      
-      {/* Corte Superior Diagonal (Conecta con el final de Servicios) */}
+      {/* ── 1. TRANSICIONES GEOMÉTRICAS (Cortes Estructurales) ────── */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none -mt-[1px]">
-        {/* ⚠️ IMPORTANTE: Este text-[#081226] asume que "Servicios" termina en ese color. 
-             Si cambiaste el color de Servicios, solo cambia el HEX aquí */}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-[40px] md:h-[80px] lg:h-[120px] text-[#081226]">
           <polygon points="0,0 1440,0 0,100" fill="currentColor" />
         </svg>
       </div>
 
-      {/* Corte Inferior Diagonal (Conecta con el inicio de Nosotros) */}
       <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none -mb-[1px]">
-        {/* ⚠️ IMPORTANTE: Este text-[#142e55] asume que "Nosotros" empieza con ese azul. 
-             Si tu azul de Nosotros es distinto (ej. #0e2140), solo cambia el HEX aquí */}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-[40px] md:h-[80px] lg:h-[120px] text-[#142e55]">
           <polygon points="0,100 1440,100 1440,0" fill="currentColor" />
         </svg>
       </div>
 
-      {/* ── 2. FONDO "SHOWROOM INDUSTRIAL" ─────────────────────── */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:32px_32px] opacity-60" />
-        
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 right-0 h-[600px] w-[600px] rounded-full bg-white/40 blur-[120px] -translate-y-1/2 translate-x-1/3" 
+      {/* ── 2. FONDO "PLANO TÉCNICO" ANIMADO ────────────────────────── */}
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.12]">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(#071324 1px, transparent 1px), linear-gradient(90deg, #071324 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }}
         />
+        {/* Cruz de calibración (Crosshairs) */}
+        <div className="absolute top-[10%] left-[5%] w-8 h-8 border-l-2 border-t-2 border-[#071324]" />
+        <div className="absolute bottom-[10%] right-[5%] w-8 h-8 border-r-2 border-b-2 border-[#071324]" />
+        
+        {/* Línea de Escaneo Láser Vertical */}
         <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-1/4 left-0 h-[800px] w-[800px] rounded-full bg-[#F5A623]/5 blur-[120px] translate-y-1/3 -translate-x-1/3" 
+          animate={{ y: ['-10%', '110%'] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          className="absolute top-0 left-0 w-full h-[2px] bg-[#F5A623] shadow-[0_0_15px_rgba(245,166,35,0.8)] opacity-30" 
         />
       </div>
 
       <div className="relative mx-auto max-w-[1400px] z-10">
         
-        {/* ── 3. HEADER ANIMADO ─────────────────────────────────── */}
-        <div className="mb-10 text-center max-w-4xl mx-auto flex flex-col items-center">
-          {/* <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        {/* ── 3. ENCABEZADO "SISTEMA LOGÍSTICO" ─────────────────────── */}
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 md:mb-16">
+          <div className="flex flex-col items-start gap-4 border-l-[6px] border-[#F5A623] pl-6 relative">
+            {/* Decal Telemetría */}
+            <div className="absolute -left-[6px] top-0 w-1.5 h-1/3 bg-[#071324]" />
+            
+            {/* <div className="inline-flex items-center gap-3 bg-[#071324] px-4 py-2 border border-white/10 shadow-lg">
+              <div className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#25D366] opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#25D366]"></span>
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
+                Sistema Operativo
+              </span>
+              <span className="text-[10px] font-bold text-white/40 ml-2">v.2.4</span>
+            </div> */}
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl lg:text-7xl font-black text-[#071324] uppercase tracking-tighter leading-[0.95]"
+            >
+              Control de <br />
+              <span className="text-[#F5A623] drop-shadow-sm">Inventario.</span>
+            </motion.h2>
+          </div>
+
+          {/* Tarjeta de estado de flota */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2.5 rounded-full border border-white/60 bg-white/50 backdrop-blur-md px-5 py-2 mb-6 shadow-sm"
+            className="flex items-center gap-4 bg-white border border-slate-300 p-4 shadow-sm"
           >
-            <Sparkles size={16} className="text-[#F5A623]" />
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#142e55]">
-              Catálogo Interactivo
-            </span>
-          </motion.div> */}
-          
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-5xl md:text-6xl lg:text-7xl font-black text-[#142e55] tracking-tight leading-[1.05]"
-          >
-            Encuentra la <span className="text-[#F5A623] drop-shadow-sm">Fuerza</span> Exacta.
-          </motion.h2>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            className="mt-6 text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl"
-          >
-            Explora nuestra flota de maquinaria pesada certificada. Filtra por categoría, busca por especificaciones y cotiza al instante.
-          </motion.p>
+            <div className="bg-[#071324] p-3 text-[#F5A623]">
+              <Activity size={24} />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Estado de Flota</p>
+              <p className="text-xl font-black text-[#071324] leading-none mt-1">ÓPTIMO [OK]</p>
+            </div>
+          </motion.div>
         </div>
 
-        {/* ── 4. PANEL DE CONTROL (Glassmorphism Premium) ─────── */}
+        {/* ── 4. CONSOLA DE MANDO (Buscador y Filtros) ─────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.7 }}
-          className="mb-14 flex flex-col xl:flex-row gap-6 items-center justify-between rounded-[2.5rem] border border-white/60 bg-white/40 backdrop-blur-2xl p-4 shadow-2xl shadow-slate-300/50 relative z-20"
+          className="mb-10 bg-[#071324] shadow-2xl relative z-20 flex flex-col xl:flex-row border border-[#142e55]"
         >
-          {/* Categorías (Animación en Cascada y Píldora) */}
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex w-full xl:w-auto overflow-x-auto hide-scrollbar gap-2 p-1"
-          >
-            {categorias.map(cat => {
-              const isActive = filtro === cat;
-              return (
-                <motion.button
-                  variants={pillVariants}
-                  key={cat}
-                  onClick={() => setFiltro(cat)}
-                  className={`relative flex-shrink-0 rounded-2xl px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors duration-300 ${
-                    isActive ? 'text-white' : 'text-slate-500 hover:text-[#142e55]'
-                  }`}
-                >
-                  {/* Animación de la píldora activa */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeFilterBg"
-                      className="absolute inset-0 bg-[#142e55] rounded-2xl shadow-lg"
-                      initial={false}
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10">{cat.replace('-', ' ')}</span>
-                </motion.button>
-              )
-            })}
-          </motion.div>
+          {/* Detalles mecánicos top/bottom */}
+          <div className="absolute top-0 left-4 w-12 h-1 bg-[#F5A623]" />
+          <div className="absolute bottom-0 right-4 w-12 h-1 bg-[#F5A623]" />
 
-          {/* Buscador Magnético */}
-          <div className={`relative w-full xl:w-[400px] flex-shrink-0 transition-all duration-500 ${isFocused ? 'scale-[1.02]' : 'scale-100'}`}>
-            <div className={`absolute -inset-1 rounded-2xl bg-[#F5A623] opacity-0 blur-lg transition-opacity duration-500 ${isFocused ? 'opacity-20' : ''}`} />
-            
-            <div className="relative flex items-center bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 overflow-hidden shadow-sm hover:bg-white transition-colors">
-              <Search size={20} className={`ml-5 transition-colors duration-300 ${isFocused ? 'text-[#F5A623]' : 'text-slate-400'}`} />
+          {/* Buscador Digital (Izquierda) */}
+          {/* <div className="xl:w-[450px] border-b xl:border-b-0 xl:border-r border-white/10 p-6 lg:p-8 bg-[#040a12] relative overflow-hidden">
+            <Cpu size={120} className="absolute -bottom-6 -right-6 text-white/[0.02] pointer-events-none" />
+
+            <div className="flex items-center justify-between mb-4">
+              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#F5A623] flex items-center gap-2">
+                <Barcode size={14} /> Entrada de Datos
+              </label>
+              <span className="text-[10px] text-white/30 font-mono">REQ: 001-A</span>
+            </div>
+
+            <div className={`relative flex items-center bg-[#071324] border-2 transition-all duration-300 ${isFocused ? 'border-[#F5A623] shadow-[0_0_15px_rgba(245,166,35,0.15)]' : 'border-white/10 hover:border-white/30'}`}>
+              <div className="pl-4 text-[#F5A623] font-mono font-bold text-lg">
+                {isFocused ? <div className="w-2.5 h-5 bg-[#F5A623] animate-pulse" /> : '>'}
+              </div>
               <input
                 type="text"
-                placeholder="Ej. Retroexcavadora, Volquete..."
+                placeholder="ESCANEAR O ESCRIBIR EQUIPO..."
                 value={busqueda}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                onChange={e => setBusqueda(e.target.value)}
-                className="w-full bg-transparent pl-3 pr-5 py-4 text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none"
+                onChange={e => setBusqueda(e.target.value.toUpperCase())}
+                className="w-full bg-transparent px-3 py-4 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none uppercase tracking-wider"
               />
               <AnimatePresence>
                 {busqueda.length > 0 && (
@@ -190,65 +191,113 @@ export default function Catalogo() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0 }}
                     onClick={() => setBusqueda('')}
-                    className="mr-5 text-slate-400 hover:text-[#142e55] transition-colors"
+                    className="mr-3 p-1.5 text-[#071324] bg-[#F5A623] hover:bg-white transition-colors"
                   >
-                    <XCircle size={18} />
+                    <X size={16} strokeWidth={3} />
                   </motion.button>
                 )}
               </AnimatePresence>
             </div>
+          </div> */}
+
+          {/* Filtros de Categorías (Derecha) */}
+          <div className="flex-1 p-6 lg:p-8 flex flex-col justify-center bg-gradient-to-br from-[#071324] to-[#0a182b]">
+            <div className="flex items-center justify-between mb-4">
+              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 flex items-center gap-2">
+                <SlidersHorizontal size={14} /> Selector de Clase
+              </label>
+              
+              {/* Display LCD de Resultados */}
+              <div className="flex items-center gap-3 bg-[#040a12] border border-white/10 px-4 py-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Match:</span>
+                <span className="text-sm font-mono font-bold text-[#F5A623] drop-shadow-[0_0_8px_rgba(245,166,35,0.5)]">
+                  {maquinasFiltradas.length.toString().padStart(3, '0')}
+                </span>
+              </div>
+            </div>
+
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="flex overflow-x-auto hide-scrollbar gap-2 pb-2"
+            >
+              {categorias.map((cat, index) => {
+                const isActive = filtro === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setFiltro(cat)}
+                    className={`group relative flex-shrink-0 px-6 py-3 text-xs font-black uppercase tracking-wider transition-all duration-300 ${
+                      isActive 
+                        ? 'bg-[#F5A623] text-[#071324]' 
+                        : 'bg-[#040a12] text-white/60 hover:bg-white/10 hover:text-white border border-white/5'
+                    }`}
+                  >
+                    {/* Efecto de "placa encajada" cuando está activo */}
+                    {isActive && (
+                      <span className="absolute -top-1 left-0 w-full h-1 bg-[#d68b15]" />
+                    )}
+                    
+                    <span className="flex items-center gap-2">
+                      <span className={`text-[9px] font-mono ${isActive ? 'text-[#071324]/60' : 'text-white/20 group-hover:text-white/40'}`}>
+                        {index.toString().padStart(2, '0')}
+                      </span>
+                      {cat.replace('-', ' ')}
+                    </span>
+                  </button>
+                )
+              })}
+            </motion.div>
           </div>
         </motion.div>
 
-        {/* Indicador de resultados */}
-        <motion.div layout className="mb-8 flex items-center gap-3 text-sm font-bold tracking-widest text-slate-500 uppercase">
-          <div className="h-px w-8 bg-[#F5A623]" />
-          Mostrando <span className="text-[#142e55]">{maquinasFiltradas.length}</span> equipo{maquinasFiltradas.length !== 1 ? 's' : ''}
-        </motion.div>
-
-        {/* ── 5. GRID DE MÁQUINAS ANIMADO ──────────────────────── */}
+        {/* ── 5. GRID DE MÁQUINAS ──────────────────────────────── */}
         <motion.div layout className="min-h-[500px]">
           <AnimatePresence mode="popLayout">
             {maquinasFiltradas.length > 0 ? (
               <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 {maquinasFiltradas.map((maquina, i) => (
-                  <MachineCard
-                    key={maquina.id}
-                    maquina={maquina}
-                    onCotizar={handleCotizar}
-                    index={i}
-                  />
+                  <motion.div key={maquina.id} variants={dropVariants} layout>
+                    <MachineCard
+                      maquina={maquina}
+                      onCotizar={handleCotizar}
+                      index={i}
+                    />
+                  </motion.div>
                 ))}
               </motion.div>
             ) : (
-              /* Estado Vacío Premium */
+              /* ── ESTADO VACÍO (ERROR DE SISTEMA) ─────────────── */
               <motion.div
                 key="empty"
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                transition={{ duration: 0.4 }}
-                className="flex flex-col items-center justify-center py-32 text-center rounded-[3rem] border-2 border-dashed border-slate-300 bg-white/30 backdrop-blur-sm shadow-sm"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                className="flex flex-col items-center justify-center py-24 text-center border border-[#071324]/20 bg-white shadow-inner relative overflow-hidden"
               >
-                <motion.div 
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="mb-6 flex h-24 w-24 items-center justify-center rounded-[2rem] bg-white text-[#F5A623] shadow-md border border-slate-100"
-                >
-                  <SlidersHorizontal size={40} />
-                </motion.div>
-                <h3 className="text-3xl font-black text-[#142e55] mb-3 tracking-tight">Sin coincidencias</h3>
-                <p className="text-slate-500 font-medium max-w-md mb-8 text-lg">
-                  No tenemos maquinaria que coincida con "<span className="text-[#142e55] font-bold">{busqueda}</span>" en esta categoría.
+                {/* Patrón de peligro en las esquinas */}
+                <div className="absolute top-0 left-0 w-16 h-16 bg-[linear-gradient(45deg,#F5A623_25%,transparent_25%,transparent_50%,#F5A623_50%,#F5A623_75%,transparent_75%,transparent)] bg-[length:20px_20px] opacity-20" />
+                <div className="absolute bottom-0 right-0 w-16 h-16 bg-[linear-gradient(45deg,#F5A623_25%,transparent_25%,transparent_50%,#F5A623_50%,#F5A623_75%,transparent_75%,transparent)] bg-[length:20px_20px] opacity-20" />
+
+                <div className="mb-6 flex h-24 w-24 items-center justify-center bg-[#071324] text-[#F5A623] relative">
+                  <span className="absolute -inset-2 border border-[#F5A623]/30 animate-pulse" />
+                  <AlertTriangle size={48} strokeWidth={1.5} />
+                </div>
+                
+                <h3 className="text-3xl font-black text-[#071324] uppercase mb-2 tracking-tight">Activo No Localizado</h3>
+                <p className="text-[#071324]/60 font-medium max-w-md mb-8 text-sm uppercase tracking-wider">
+                  El término <span className="text-[#071324] font-black px-2 py-1 bg-slate-100 border border-slate-300">"{busqueda}"</span> no devolvió resultados en la base de datos actual.
                 </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                
+                <button
                   onClick={() => { setFiltro(TODAS); setBusqueda('') }}
-                  className="rounded-full bg-[#142e55] px-10 py-4 font-bold uppercase tracking-wider text-white shadow-xl shadow-[#142e55]/20 hover:bg-[#0d1b2a] transition-all"
+                  className="group flex items-center gap-3 bg-[#071324] px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-[#F5A623] hover:text-[#071324] hover:shadow-[0_0_20px_rgba(245,166,35,0.4)]"
                 >
-                  Limpiar Búsqueda
-                </motion.button>
+                  <Settings2 size={16} className="group-hover:animate-spin" /> Restaurar Filtros
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -256,7 +305,7 @@ export default function Catalogo() {
 
       </div>
 
-      {/* Ocultar scrollbar nativa en dispositivos móviles para las categorías */}
+      {/* Ocultar scrollbar nativa */}
       <style dangerouslySetInnerHTML={{__html: `
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

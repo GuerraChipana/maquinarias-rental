@@ -11,8 +11,8 @@ export const EMPRESA = {
 
   contacto: {
     email:    'atencionalcliente@mavtec.com',
-    telefono: ['957 682 641'],
-    whatsapp: '+51 957682641', // Con código de país para wa.me
+    telefono: ['+51 957 682 641'],
+    whatsapp: '+51  957682641', // Con código de país para wa.me
   },
 
   ubicacion: {

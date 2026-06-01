@@ -5,194 +5,193 @@ import {
   Phone,
   Mail,
   MapPin,
-  MessageCircle,
-  ChevronRight,
+  MessageSquare,
   ArrowUp,
+  ArrowRight,
+  HardHat,
+  ShieldCheck,
+  Terminal
 } from 'lucide-react'
 import { EMPRESA } from '@/lib/constants'
 
-/* ── Nav links del footer ──────────────────────────────────── */
+/* ── Estructura de Navegación ──────────────────────────────── */
 const NAV_COLS = [
   {
-    titulo: 'Servicios',
+    titulo: 'Operaciones',
     links: [
-      { label: 'Maquinaria Pesada', href: '#catalogo' },
-      { label: 'Camiones Cisterna', href: '#servicios' },
-      { label: 'Agua Potable',      href: '#servicios' },
-      { label: 'Con Operador',      href: '#servicios' },
+      { label: 'Flota Pesada', href: '#catalogo' },
+      { label: 'Suministro de Agua', href: '#servicios' },
+      { label: 'Servicio con Operador', href: '#servicios' },
+      { label: 'Logística en Obra', href: '#servicios' },
     ],
   },
   {
-    titulo: 'Empresa',
+    titulo: 'Base de Datos',
     links: [
-      { label: 'Nosotros',    href: '#nosotros' },
-      { label: 'Catálogo',    href: '#catalogo' },
-      { label: 'Testimonios', href: '#testimonios' },
-      { label: 'Contacto',    href: '#contacto' },
+      { label: 'Perfil Corporativo', href: '#nosotros' },
+      { label: 'Inventario de Equipos', href: '#catalogo' },
+      { label: 'Historial de Proyectos', href: '#testimonios' },
+      { label: 'Central de Despacho', href: '#contacto' },
     ],
   },
   {
-    titulo: 'Legal',
+    titulo: 'Legal y Protocolos',
     links: [
-      { label: 'Términos de servicio', href: '#' },
-      { label: 'Política de privacidad', href: '#' },
+      { label: 'Términos de Arrendamiento', href: '#' },
+      { label: 'Políticas de Seguridad', href: '#' },
     ],
   },
 ]
 
-/* ── Scroll suave a sección ────────────────────────────────── */
+/* ── Utilidades ────────────────────────────────────────────── */
 function scrollTo(href: string) {
   if (href === '#') return
   const el = document.querySelector(href)
   el?.scrollIntoView({ behavior: 'smooth' })
 }
 
-/* ── Botón de scroll al top ────────────────────────────────── */
 function ScrollTop() {
   return (
     <motion.button
-      whileHover={{ scale: 1.1, y: -2 }}
-      whileTap={{ scale: 0.93 }}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.95 }}
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Volver al inicio"
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/50 hover:border-[#F5A623]/40 hover:text-[#F5A623] transition-all duration-200"
+      className="group flex h-12 w-12 items-center justify-center bg-[#071324] border border-white/20 text-white/50 hover:border-[#F5A623] hover:text-[#F5A623] hover:bg-[#142e55] transition-all duration-300"
     >
-      <ArrowUp size={16} />
+      <ArrowUp size={20} strokeWidth={2.5} className="transition-transform group-hover:-translate-y-1" />
     </motion.button>
   )
 }
 
-/* ── Componente principal ──────────────────────────────────── */
+/* ── Componente Principal ──────────────────────────────────── */
 export default function Footer() {
-      const telefono = String(
-    (EMPRESA as any).telefono ?? (EMPRESA as any).celular ?? ''
-  )
-  const whatsappMsg = encodeURIComponent(
-    '¡Hola MAVTEC! Quisiera solicitar información sobre el alquiler de maquinaria pesada.'
-  )
+  const telefono = String(EMPRESA.contacto.telefono)
+  const whatsappMsg = encodeURIComponent('¡Hola MAVTEC! Requiero información técnica para iniciar un alquiler.')
   const whatsappUrl = `https://wa.me/51${telefono.replace(/\s/g, '')}?text=${whatsappMsg}`
-
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative w-full bg-[#0a1a30] border-t border-white/[0.06] overflow-hidden">
+    <footer className="relative w-full bg-[#040a12] font-[Montserrat,sans-serif]">
 
-      {/* ── Fondos decorativos ─────────────────────────────── */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-64 w-[600px] -translate-x-1/2 bg-[#1A3C6E]/20 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.018]"
+      {/* ── 1. CINTA DE PRECAUCIÓN INDUSTRIAL (Top Border) ────── */}
+      <div 
+        className="h-2 w-full" 
+        style={{ backgroundImage: 'repeating-linear-gradient(45deg, #F5A623, #F5A623 15px, #040a12 15px, #040a12 30px)' }}
+      />
+
+      {/* ── 2. FONDOS TÉCNICOS ─────────────────────────────────── */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute top-0 right-0 h-[500px] w-[500px] bg-[radial-gradient(circle_at_top_right,_#142e55_0%,_transparent_70%)] opacity-30" />
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
+            backgroundImage: 'linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
           }}
         />
       </div>
 
-      {/* ══ CTA BANNER SUPERIOR ════════════════════════════════ */}
-      <div className="relative border-b border-white/[0.06]">
-        <div className="max-w-7xl mx-auto px-5 lg:px-16 xl:px-24 py-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-
-            <div className="text-center lg:text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F5A623]/60 font-[Montserrat,sans-serif] mb-2">
-                ¿Listo para empezar?
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-black text-white font-[Montserrat,sans-serif] leading-tight">
-                Cotizá sin compromiso.{' '}
-                <span className="text-[#F5A623]">Hoy.</span>
-              </h3>
+      {/* ── 3. CTA DE DESPLIEGUE FINAL ─────────────────────────── */}
+      <div className="relative z-10 border-b border-white/10 bg-[#071324]">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12 xl:px-20 py-12">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            
+            <div className="flex items-start gap-4">
+              <div className="hidden sm:flex h-16 w-16 items-center justify-center bg-[#F5A623] text-[#040a12] shrink-0">
+                <HardHat size={32} />
+              </div>
+              <div>
+                <p className="flex items-center gap-2 text-[10px] font-mono text-[#F5A623] mb-2 uppercase tracking-widest">
+                  <Terminal size={12} /> Siguiente Paso
+                </p>
+                <h3 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight leading-none">
+                  Iniciá tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5A623] to-[#d68b15]">Cotización.</span>
+                </h3>
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+            <div className="flex flex-col w-full sm:w-auto sm:flex-row gap-4 shrink-0">
               <motion.a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2.5 rounded-xl bg-[#25D366] px-6 py-3 text-sm font-bold text-white hover:bg-[#1db954] transition-colors font-[Montserrat,sans-serif] tracking-wide"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center justify-center gap-3 bg-[#25D366] px-8 py-4 text-xs font-black uppercase tracking-widest text-[#040a12] transition-colors hover:bg-[#20b858]"
               >
-                <MessageCircle size={16} />
-                WhatsApp
+                <MessageSquare size={16} />
+                WhatsApp Directo
               </motion.a>
               <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => scrollTo('#cotizacion')}
-                className="flex items-center justify-center gap-2 rounded-xl border border-[#F5A623]/40 bg-[#F5A623]/10 px-6 py-3 text-sm font-bold text-[#F5A623] hover:bg-[#F5A623]/15 transition-all font-[Montserrat,sans-serif] tracking-wide"
+                className="group flex items-center justify-center gap-3 border border-[#F5A623] bg-transparent px-8 py-4 text-xs font-black uppercase tracking-widest text-[#F5A623] transition-colors hover:bg-[#F5A623] hover:text-[#040a12]"
               >
-                Solicitar cotización
-                <ChevronRight size={14} />
+                Solicitar Equipo
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </motion.button>
             </div>
+            
           </div>
         </div>
       </div>
 
-      {/* ══ CUERPO DEL FOOTER ══════════════════════════════════ */}
-      <div className="relative max-w-7xl mx-auto px-5 lg:px-16 xl:px-24 py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+      {/* ── 4. PANEL DE INFORMACIÓN (Main Footer) ──────────────── */}
+      <div className="relative z-10 max-w-7xl mx-auto px-5 lg:px-12 xl:px-20 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
 
-          {/* Col 1 — Brand */}
-          <div className="lg:col-span-4">
-            {/* Logo */}
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-10 w-10 rounded-xl bg-[#F5A623] flex items-center justify-center shadow-lg shadow-[#F5A623]/20">
-                <span className="text-[#1A3C6E] font-black text-lg leading-none">M</span>
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-white font-black text-xl tracking-[-0.03em] font-[Montserrat,sans-serif]">
-                  MAVTEC
-                </span>
-                <span className="text-[#F5A623]/70 text-[10px] font-semibold tracking-[0.18em] uppercase font-[Montserrat,sans-serif]">
-                  E.I.R.L
-                </span>
-              </div>
+          {/* Columna 1: Marca y Credenciales */}
+          <div className="lg:col-span-4 flex flex-col">
+            <div className="flex items-center gap-4 mb-6 border-l-4 border-[#F5A623] pl-4">
+              <h2 className="text-3xl font-black text-white tracking-tighter uppercase">
+                MAVTEC
+              </h2>
+              <span className="bg-white/10 px-2 py-1 text-[10px] font-mono text-white/60">E.I.R.L</span>
             </div>
 
-            <p className="text-xs text-white/40 leading-relaxed font-[Montserrat,sans-serif] mb-6 max-w-xs">
-              Alquiler de maquinaria pesada, camiones cisterna y suministro de
-              agua potable en Pisco, Ica y toda la región sur del Perú.
+            <p className="text-sm text-white/50 leading-relaxed mb-8 max-w-sm border-b border-white/5 pb-8">
+              Alquiler de maquinaria pesada, camiones cisterna y logística para proyectos de construcción e ingeniería en la región sur del Perú.
             </p>
 
-            {/* Contacto rápido */}
-            <div className="space-y-2.5">
-              <a
-                href={`tel:+51${telefono.replace(/\s/g, '')}`}
-                className="flex items-center gap-2.5 text-xs text-white/45 hover:text-[#F5A623] transition-colors font-[Montserrat,sans-serif] group"
-              >
-                <Phone size={12} className="text-white/25 group-hover:text-[#F5A623] transition-colors flex-shrink-0" />
-                {EMPRESA.contacto.telefono}
+            <div className="space-y-4">
+              <a href={`tel:+51${telefono.replace(/\s/g, '')}`} className="group flex items-center gap-4 text-sm text-white/60 hover:text-[#F5A623] transition-colors">
+                <div className="bg-white/5 p-2 group-hover:bg-[#F5A623]/10">
+                  <Phone size={14} className="group-hover:text-[#F5A623]" />
+                </div>
+                <span className="font-mono tracking-wider">{telefono}</span>
               </a>
-              <a
-                href={`mailto:${EMPRESA.contacto.email}`}
-                className="flex items-center gap-2.5 text-xs text-white/45 hover:text-[#F5A623] transition-colors font-[Montserrat,sans-serif] group"
-              >
-                <Mail size={12} className="text-white/25 group-hover:text-[#F5A623] transition-colors flex-shrink-0" />
-                {EMPRESA.contacto.email}
+              <a href={`mailto:${EMPRESA.contacto.email}`} className="group flex items-center gap-4 text-sm text-white/60 hover:text-[#F5A623] transition-colors">
+                <div className="bg-white/5 p-2 group-hover:bg-[#F5A623]/10">
+                  <Mail size={14} className="group-hover:text-[#F5A623]" />
+                </div>
+                <span className="tracking-wide">{EMPRESA.contacto.email}</span>
               </a>
-              <div className="flex items-center gap-2.5 text-xs text-white/45 font-[Montserrat,sans-serif]">
-                <MapPin size={12} className="text-white/25 flex-shrink-0" />
-                Pisco, Ica — Perú
+              <div className="flex items-center gap-4 text-sm text-white/60">
+                <div className="bg-white/5 p-2">
+                  <MapPin size={14} className="text-white/40" />
+                </div>
+                <span className="uppercase tracking-wider text-xs">Pisco, Ica — Base de Operaciones</span>
               </div>
             </div>
           </div>
 
-          {/* Col 2-4 — Nav columns */}
-          <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-8">
-            {NAV_COLS.map(col => (
+          {/* Columnas 2, 3 y 4: Rutas de Sistema (Links) */}
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-10">
+            {NAV_COLS.map((col, idx) => (
               <div key={col.titulo}>
-                <h4 className="text-[10px] font-black uppercase tracking-[0.22em] text-[#F5A623]/60 font-[Montserrat,sans-serif] mb-4">
-                  {col.titulo}
+                <h4 className="flex items-center gap-2 text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] mb-6">
+                  <span className="text-[#F5A623]">{'//'}</span> DIR_{idx + 1}: {col.titulo}
                 </h4>
-                <ul className="space-y-2.5">
+                <ul className="space-y-4">
                   {col.links.map(link => (
                     <li key={link.label}>
                       <button
                         onClick={() => scrollTo(link.href)}
-                        className="text-xs text-white/40 hover:text-white/75 transition-colors font-[Montserrat,sans-serif] text-left"
+                        className="group flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest hover:text-white transition-colors"
                       >
+                        <span className="w-0 h-[2px] bg-[#F5A623] transition-all duration-300 group-hover:w-3" />
                         {link.label}
                       </button>
                     </li>
@@ -202,61 +201,33 @@ export default function Footer() {
             ))}
           </div>
 
-          {/* Col 5 — Redes + QR ficticio WhatsApp */}
-          <div className="lg:col-span-2 flex flex-col">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.22em] text-[#F5A623]/60 font-[Montserrat,sans-serif] mb-4">
-              Contáctanos
-            </h4>
-
-            {/* WhatsApp card */}
-            <motion.a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.03 }}
-              className="flex flex-col items-center justify-center gap-2 rounded-xl border border-[#25D366]/20 bg-[#25D366]/8 p-5 mb-4 hover:border-[#25D366]/40 transition-all"
-            >
-              <MessageCircle size={22} className="text-[#25D366]" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#25D366]/80 font-[Montserrat,sans-serif] text-center">
-                Escribinos por<br />WhatsApp
-              </span>
-            </motion.a>
-
-            {/* RUC info */}
-            <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
-              <p className="text-[10px] text-white/25 font-[Montserrat,sans-serif] font-semibold uppercase tracking-widest mb-1">
-                Datos empresa
-              </p>
-              <p className="text-xs text-white/40 font-[Montserrat,sans-serif]">
-                MAVTEC E.I.R.L<br />
-                Pisco, Ica, Perú
-              </p>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* ══ BARRA INFERIOR ═════════════════════════════════════ */}
-      <div className="relative border-t border-white/[0.05]">
-        <div className="max-w-7xl mx-auto px-5 lg:px-16 xl:px-24 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-
-          <p className="text-[11px] text-white/25 font-[Montserrat,sans-serif] text-center sm:text-left">
-            © {year} MAVTEC E.I.R.L — Todos los derechos reservados.
-            <span className="text-white/15 mx-2">·</span>
-            Pisco, Ica, Perú.
-          </p>
-
-          <div className="flex items-center gap-4">
-            {/* Hecho con */}
-            <span className="text-[11px] text-white/20 font-[Montserrat,sans-serif] hidden sm:block">
-              Sitio web por{' '}
-              <span className="text-white/35 font-semibold">Tu empresa dev</span>
+      {/* ── 5. BARRA DE ESTADO INFERIOR (Status Bar) ───────────── */}
+      <div className="relative z-10 border-t border-white/10 bg-[#020509]">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12 xl:px-20 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          
+          <div className="flex items-center gap-4 text-[10px] font-mono uppercase tracking-widest text-white/40">
+            <span className="flex items-center gap-2 text-[#25D366]">
+              <ShieldCheck size={12} /> ESTADO: EN LÍNEA
             </span>
+            {/* <span className="hidden sm:inline">|</span>
+            <span className="hidden sm:inline">VER_SISTEMA: 2.0.4</span> */}
+          </div>
 
+          <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest text-center">
+            © {year} MAVTEC E.I.R.L — LICENCIA ACTIVA
+          </div>
+
+          {/* Botón táctico para volver arriba */}
+          <div className="absolute right-5 lg:right-12 xl:right-20 -top-6">
             <ScrollTop />
           </div>
+
         </div>
       </div>
+
     </footer>
   )
 }

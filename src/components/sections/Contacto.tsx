@@ -1,325 +1,322 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone,
   Mail,
   MapPin,
   Clock,
-  MessageCircle,
+  MessageSquare,
+  Copy,
+  CheckSquare,
+  Truck,
+  Wrench,
+  HardHat,
   ChevronRight,
-  Send,
+  AlertTriangle
 } from 'lucide-react'
 import { EMPRESA } from '@/lib/constants'
 
-/* ── Tarjeta de canal de contacto ──────────────────────────── */
-function ContactoCard({
+/* ── Hook de Operatividad (Lógica de Horarios) ───────────────── */
+function useCurrentTimeStatus() {
+  const [isOpen, setIsOpen] = useState(true)
+
+  useEffect(() => {
+    const checkStatus = () => {
+      const now = new Date()
+      const day = now.getDay()
+      const hour = now.getHours()
+
+      if (day >= 1 && day <= 5) {
+        setIsOpen(hour >= 7 && hour < 18)
+      } else if (day === 6) {
+        setIsOpen(hour >= 7 && hour < 13)
+      } else {
+        setIsOpen(false)
+      }
+    }
+
+    checkStatus()
+    const interval = setInterval(checkStatus, 60000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return isOpen
+}
+
+/* ── Tarjeta de Contacto Estilo "Ficha Técnica" ──────────────── */
+function ContactBlock({
   icon: Icon,
-  label,
+  title,
   value,
-  sub,
+  actionText,
   href,
-  color,
-  delay,
+  onClick,
+  isPrimary = false
 }: {
   icon: React.ElementType
-  label: string
+  title: string
   value: string
-  sub?: string
-  href: string
-  color: string
-  delay: number
+  actionText: string
+  href?: string
+  onClick?: (e: React.MouseEvent) => void
+  isPrimary?: boolean
 }) {
+  const Wrapper = href ? motion.a : motion.button
+  
   return (
-    <motion.a
+    <Wrapper
       href={href}
-      target={href.startsWith('http') ? '_blank' : undefined}
-      rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ delay, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, scale: 1.01 }}
-      className="group flex flex-col rounded-2xl border border-white/[0.08] bg-[#83858262] p-6 transition-all duration-200 hover:border-white/15 cursor-pointer"
+      onClick={onClick}
+      target={href?.startsWith('http') ? '_blank' : undefined}
+      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      whileHover={{ x: 4 }}
+      whileTap={{ scale: 0.98 }}
+      className={`group relative flex w-full items-center justify-between border-l-4 bg-[#0d1f38] p-5 text-left transition-colors duration-200 hover:bg-[#122848] ${
+        isPrimary ? 'border-[#F5A623]' : 'border-white/20 hover:border-[#F5A623]/60'
+      }`}
     >
-      {/* Icono */}
-      <div
-        className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border transition-colors duration-200"
-        style={{
-          background: `${color}12`,
-          borderColor: `${color}25`,
-        }}
-      >
-        <Icon size={20} style={{ color }} />
+      <div className="flex items-center gap-4">
+        <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center bg-[#071324] ${isPrimary ? 'text-[#F5A623]' : 'text-white/70'}`}>
+          <Icon size={24} strokeWidth={1.5} />
+        </div>
+        <div>
+          <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 font-[Montserrat,sans-serif]">
+            {title}
+          </span>
+          <span className="mt-1 block text-lg font-bold text-white font-[Montserrat,sans-serif] tracking-tight">
+            {value}
+          </span>
+        </div>
       </div>
-
-      {/* Label */}
-      <span className="text-[10px] font-bold uppercase tracking-[0.2em] font-[Montserrat,sans-serif] mb-1.5"
-        style={{ color }}
-      >
-        {label}
-      </span>
-
-      {/* Valor principal */}
-      <span className="text-sm font-black text-white font-[Montserrat,sans-serif] leading-tight mb-1">
-        {value}
-      </span>
-
-      {/* Sub */}
-      {sub && (
-        <span className="text-xs text-white/40 font-[Montserrat,sans-serif]">{sub}</span>
-      )}
-
-      {/* Arrow */}
-      <div className="mt-4 flex items-center gap-1 text-xs font-bold font-[Montserrat,sans-serif] transition-colors duration-200"
-        style={{ color: `${color}80` }}
-      >
-        <span>Contactar</span>
-        <ChevronRight size={12} className="mt-px group-hover:translate-x-1 transition-transform duration-200" />
+      
+      <div className="flex items-center gap-2 opacity-60 transition-opacity group-hover:opacity-100">
+        <span className="hidden text-xs font-bold uppercase text-[#F5A623] sm:block">
+          {actionText}
+        </span>
+        <ChevronRight size={18} className="text-[#F5A623]" />
       </div>
-    </motion.a>
+    </Wrapper>
   )
 }
 
-/* ── Horario row ───────────────────────────────────────────── */
-function HorarioRow({ dia, hora }: { dia: string; hora: string }) {
-  return (
-    <div className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-0">
-      <span className="text-xs font-semibold text-white/50 font-[Montserrat,sans-serif]">{dia}</span>
-      <span className="text-xs font-bold text-white/75 font-[Montserrat,sans-serif]">{hora}</span>
-    </div>
-  )
-}
-
-/* ── Componente principal ──────────────────────────────────── */
+/* ── Componente Principal ──────────────────────────────────── */
 export default function Contacto() {
-  const telefono = String(
-    (EMPRESA.contacto.telefono ?? (EMPRESA as any).contacto.celular ?? '')
-  )
+  const isOpen = useCurrentTimeStatus()
+  const [copied, setCopied] = useState(false)
 
-  const whatsappMsg = encodeURIComponent(
-    '¡Hola MAVTEC! Quisiera solicitar información sobre el alquiler de maquinaria pesada.'
-  )
+  // Extraer datos
+  const telefono = String((EMPRESA.contacto?.telefono ?? (EMPRESA as any).contacto?.celular ?? ''))
+  const email = EMPRESA.contacto?.email ?? 'operaciones@mavtec.com'
+  
+  // URLs
+  const whatsappMsg = encodeURIComponent('¡Hola MAVTEC! Requiero información para alquiler de maquinaria en mi obra.')
   const whatsappUrl = `https://wa.me/51${telefono.replace(/\s/g, '')}?text=${whatsappMsg}`
-// rgb(131 133 130 / 38%)
+
+  const handleCopyEmail = (e: React.MouseEvent) => {
+    e.preventDefault()
+    navigator.clipboard.writeText(email)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
     <section
       id="contacto"
-      className="relative w-full bg-[#142e55] py-24 px-5 lg:px-16 xl:px-24 overflow-hidden"
+      className="relative w-full bg-[#071324] py-24 px-5 lg:px-12 xl:px-20 border-t-8 border-[#F5A623] overflow-hidden"
     >
-      {/* ── Fondos decorativos ─────────────────────────────── */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#F5A623]/20 to-transparent" />
-        <div className="absolute left-0 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-[#F5A623]/[0.04] blur-3xl -translate-x-1/2" />
-        <div className="absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[#0e2140]/70 blur-3xl translate-x-1/3 translate-y-1/3" />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
+      {/* ── Fondo Industrial (Patrón de diagonales y texturas) ── */}
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-10">
+        <div 
+          className="absolute inset-0"
           style={{
-            backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
+            backgroundImage: 'repeating-linear-gradient(-45deg, #ffffff 0, #ffffff 1px, transparent 1px, transparent 12px)'
           }}
         />
+        <div className="absolute top-0 right-0 h-[800px] w-[800px] bg-[radial-gradient(circle_at_center,_#142e55_0%,_transparent_70%)] opacity-50 blur-2xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto">
-
-        {/* ── HEADER ─────────────────────────────────────────── */}
-        <div className="mb-14 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45 }}
-              className="inline-flex items-center gap-2 rounded-full border border-[#F5A623]/30 bg-[#F5A623]/10 px-4 py-1.5 mb-5"
-            >
-              <Send size={11} className="text-[#F5A623]" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#F5A623] font-[Montserrat,sans-serif]">
-                Hablemos
+      <div className="relative z-10 mx-auto max-w-7xl">
+        
+        {/* ── ENCABEZADO ESTRUCTURAL ───────────────────────────── */}
+        <div className="mb-12 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            {/* Etiqueta de estado tipo "Panel" */}
+            <div className="mb-6 inline-flex items-center gap-3 bg-[#0d1f38] px-4 py-2 border border-white/10">
+              <div className="relative flex h-3 w-3 items-center justify-center">
+                {isOpen && <span className="absolute inline-flex h-full w-full animate-ping bg-[#25D366] opacity-60"></span>}
+                <span className={`relative inline-flex h-2.5 w-2.5 ${isOpen ? 'bg-[#25D366]' : 'bg-red-500'}`}></span>
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/80 font-[Montserrat,sans-serif]">
+                {isOpen ? 'Operaciones Activas' : 'Fuera de Turno'}
               </span>
-            </motion.div>
+            </div>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 22 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="text-4xl sm:text-5xl font-black text-white tracking-tight font-[Montserrat,sans-serif] leading-[1.0]"
-            >
-              ¿Necesitás un<br />
-              <span className="text-[#F5A623]">equipo hoy?</span>
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.45 }}
-              className="mt-4 max-w-md text-sm text-white/50 leading-relaxed font-[Montserrat,sans-serif]"
-            >
-              Respondemos en menos de 2 horas. Contamos con disponibilidad inmediata
-              en la mayoría de equipos para proyectos en Pisco, Ica y alrededores.
-            </motion.p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-[1.05] font-[Montserrat,sans-serif]">
+              Equipos listos <br className="hidden md:block"/>
+              <span className="text-[#F5A623]">para tu obra.</span>
+            </h2>
+            <p className="mt-5 text-base text-white/60 font-[Montserrat,sans-serif] max-w-lg border-l-2 border-white/20 pl-4">
+              Disponibilidad inmediata para proyectos en Ica, Pisco y toda la región. 
+              Maquinaria operativa, mantenida y lista para trabajar.
+            </p>
           </div>
 
-          {/* CTA WhatsApp destacado */}
-          <motion.a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.25, duration: 0.5 }}
-            whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(37,211,102,0.25)' }}
-            whileTap={{ scale: 0.97 }}
-            className="flex-shrink-0 self-start lg:self-auto flex items-center gap-3 rounded-xl bg-[#25D366] px-6 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-[#1db954] transition-colors font-[Montserrat,sans-serif] tracking-wide"
-          >
-            <MessageCircle size={18} />
-            Escribir por WhatsApp
-          </motion.a>
+          {/* Estadísticas Rápidas tipo "Dashboard" */}
+          <div className="grid grid-cols-2 gap-4 shrink-0">
+            <div className="bg-[#0d1f38] border border-white/10 p-4 min-w-[140px]">
+              <Truck size={20} className="text-[#F5A623] mb-2" />
+              <p className="text-2xl font-black text-white font-[Montserrat,sans-serif] leading-none">100%</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mt-1 font-[Montserrat,sans-serif]">Operatividad</p>
+            </div>
+            <div className="bg-[#0d1f38] border border-white/10 p-4 min-w-[140px]">
+              <Wrench size={20} className="text-[#F5A623] mb-2" />
+              <p className="text-2xl font-black text-white font-[Montserrat,sans-serif] leading-none">Soporte</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mt-1 font-[Montserrat,sans-serif]">Mecánico en Obra</p>
+            </div>
+          </div>
         </div>
 
-        {/* ── GRID PRINCIPAL ─────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ── GRID DE CONTENIDO ────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-          {/* Columna izquierda — Canales de contacto */}
-          <div className="lg:col-span-1 space-y-4">
-
-            <ContactoCard
-              
-              icon={Phone}
-              label="Teléfono directo"
-              value={telefono ? `+51 ${telefono}` : 'No disponible'}
-              sub="Llamadas y WhatsApp"
-              href={`tel:+51${telefono.replace(/\s/g, '')}`}
-              color="#ff9900"
-              
-              delay={0.1}
-            />
-
-            <ContactoCard
-              icon={MessageCircle}
-              label="WhatsApp"
-              value="Chat inmediato"
-              sub="Respondemos en minutos"
+          {/* COLUMNA IZQUIERDA: Canales de Contacto (Col-5) */}
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            
+            {/* CTA Principal WhatsApp */}
+            <motion.a
               href={whatsappUrl}
-              color="#00ff5e"
-              delay={0.17}
-            />
-
-            <ContactoCard
-              icon={Mail}
-              label="Correo electrónico"
-              value={EMPRESA.contacto.email ?? 'No disponible'}
-              sub="Respuesta en menos de 2h"
-              href={`mailto:${EMPRESA.contacto.email}`}
-              color="#3d9bff"
-              delay={0.24}
-            />
-
-            <ContactoCard
-              icon={MapPin}
-              label="Ubicación"
-              value="Pisco, Ica — Perú"
-              sub="Operamos en toda la región"
-              href="https://maps.google.com/?q=Pisco,Ica,Peru"
-              color="#f14545"
-              delay={0.31}
-            />
-
-            {/* Horarios */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.38, duration: 0.5 }}
-              className="rounded-2xl border border-white/[0.08] bg-[#0e2140]/60 p-5"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="group relative flex flex-col justify-center overflow-hidden bg-[#25D366] p-8 transition-all hover:bg-[#20b858]"
             >
-              <div className="flex items-center gap-2 mb-4">
-                <Clock size={13} className="text-[#F5A623]" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#F5A623] font-[Montserrat,sans-serif]">
-                  Horario de atención
-                </span>
-              </div>
-              <HorarioRow dia="Lunes — Viernes" hora="7:00 am – 6:00 pm" />
-              <HorarioRow dia="Sábados" hora="7:00 am – 1:00 pm" />
-              <HorarioRow dia="Emergencias" hora="24 / 7" />
-            </motion.div>
-          </div>
-
-          {/* Columna derecha — Mapa embed */}
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-2 flex flex-col gap-5"
-          >
-            {/* Mapa Google */}
-            <div className="relative flex-1 min-h-[340px] rounded-2xl overflow-hidden border border-white/[0.08]">
-              {/* Overlay de color para integrar con el tema */}
-              <div className="absolute inset-0 z-10 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/10" />
-
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d60876.!2d-76.2022!3d-13.7169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9110ef1ac5cfcb91%3A0xa697e5f6c1e0b25f!2sPisco%2C%20Ica!5e0!3m2!1ses!2spe!4v1234567890"
-                width="100%"
-                height="100%"
-                className="absolute inset-0 w-full h-full grayscale contrast-[1.1] opacity-80"
-                style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) saturate(0.4) brightness(0.85)' }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación de MAVTEC E.I.R.L en Pisco, Ica"
-              />
-
-              {/* Pin overlay */}
-              <div className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                <div className="flex flex-col items-center">
-                  <div className="rounded-xl border border-[#F5A623]/40 bg-[#1A3C6E]/90 backdrop-blur-sm px-4 py-2.5 shadow-xl">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-[#F5A623] animate-pulse" />
-                      <span className="text-xs font-black text-white font-[Montserrat,sans-serif]">
-                        MAVTEC E.I.R.L
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-white/50 font-[Montserrat,sans-serif] block mt-0.5">
-                      Pisco, Ica — Perú
+              {/* Textura de fondo diagonal sutil */}
+              <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgNDBsNDAtNDBIMHoiIGZpbGw9IiMwMDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==')]" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare size={16} className="text-[#071324]" />
+                    <span className="text-[11px] font-black uppercase tracking-widest text-[#071324] font-[Montserrat,sans-serif]">
+                      Atención Rápida
                     </span>
                   </div>
-                  <div className="w-px h-4 bg-[#F5A623]/60" />
-                  <div className="h-2 w-2 rounded-full bg-[#F5A623]" />
+                  <h3 className="text-2xl font-black text-white font-[Montserrat,sans-serif]">Chat vía WhatsApp</h3>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center bg-[#071324] text-[#25D366] shadow-lg transition-transform group-hover:translate-x-2">
+                  <ChevronRight size={24} />
+                </div>
+              </div>
+            </motion.a>
+
+            {/* Fichas de contacto secundarias */}
+            <ContactBlock 
+              icon={Phone} 
+              title="Central Telefónica" 
+              value={`+51 ${telefono}`} 
+              actionText="Llamar" 
+              href={`tel:+51${telefono.replace(/\s/g, '')}`} 
+              isPrimary={true}
+            />
+            
+            <ContactBlock 
+              icon={copied ? CheckSquare : Mail} 
+              title="Cotizaciones y Documentos" 
+              value={email} 
+              actionText={copied ? "Copiado" : "Copiar"} 
+              onClick={handleCopyEmail} 
+            />
+
+            {/* Horarios Estilo Tabla de Turnos */}
+            <div className="mt-2 bg-[#0d1f38] border border-white/10 p-6">
+              <div className="flex items-center gap-3 mb-5 border-b border-white/10 pb-4">
+                <Clock size={20} className="text-[#F5A623]" />
+                <h4 className="text-sm font-bold uppercase tracking-widest text-white font-[Montserrat,sans-serif]">Turnos Operativos</h4>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-semibold text-white/50 font-[Montserrat,sans-serif]">Lunes – Viernes</span>
+                  <span className="text-sm font-bold text-white font-[Montserrat,sans-serif]">07:00 – 18:00</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-semibold text-white/50 font-[Montserrat,sans-serif]">Sábados</span>
+                  <span className="text-sm font-bold text-white font-[Montserrat,sans-serif]">07:00 – 18:00</span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                  <span className="flex items-center gap-2 text-sm font-bold text-[#F5A623] font-[Montserrat,sans-serif]">
+                    <AlertTriangle size={14} /> Emergencias Obra
+                  </span>
+                  <span className="text-sm font-black text-[#F5A623] font-[Montserrat,sans-serif]">24 / 7</span>
                 </div>
               </div>
             </div>
 
-            {/* Banda de respuesta rápida */}
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                { value: '< 2h', label: 'Tiempo de respuesta' },
-                { value: '24/7', label: 'Emergencias' },
-                { value: '100%', label: 'Atención personalizada' },
-              ].map((item, i) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.08, duration: 0.45 }}
-                  className="flex flex-col items-center justify-center rounded-xl border border-white/[0.07] bg-[#0e2140]/60 py-4 px-3 text-center"
-                >
-                  <span className="text-xl font-black text-[#F5A623] font-[Montserrat,sans-serif] leading-none mb-1">
-                    {item.value}
-                  </span>
-                  <span className="text-[10px] text-white/35 font-semibold uppercase tracking-widest font-[Montserrat,sans-serif]">
-                    {item.label}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+          </div>
 
+          {/* COLUMNA DERECHA: Ubicación Logística (Col-7) */}
+          <div className="lg:col-span-7 flex flex-col">
+            <div className="relative h-full min-h-[400px] w-full bg-[#0d1f38] border border-white/10 overflow-hidden flex flex-col">
+              
+              {/* Header del mapa */}
+              <div className="flex items-center justify-between bg-[#142e55] px-6 py-4 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <HardHat size={20} className="text-[#F5A623]" />
+                  <span className="text-sm font-bold uppercase tracking-widest text-white font-[Montserrat,sans-serif]">
+                    Base Logística Principal
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-[#F5A623] font-[Montserrat,sans-serif]">Pisco, Ica</span>
+              </div>
+
+              {/* Contenedor del Iframe */}
+              <div className="relative flex-1">
+                {/* Overlay de filtro industrial para el mapa */}
+                <div className="absolute inset-0 pointer-events-none mix-blend-color z-10 bg-[#071324] opacity-40" />
+                
+                {/* Reemplaza el src con tu enlace embed de Google Maps */}
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15555.267861935637!2d-76.2163484!3d-13.7167663!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9110660ea91b7d8d%3A0x6b447605d3b10b03!2sPisco%2C%20Peru!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+                  width="100%"
+                  height="100%"
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: 0, filter: 'grayscale(0.8) contrast(1.2)' }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Base de Operaciones MAVTEC en Pisco"
+                />
+
+                {/* Tarjeta superpuesta sobre el mapa */}
+                <div className="absolute bottom-6 left-6 right-6 z-20 bg-[#071324]/95 backdrop-blur-sm border border-[#F5A623]/30 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center bg-[#F5A623] text-[#071324]">
+                      <MapPin size={20} />
+                    </div>
+                    <div>
+                      <h4 className="text-base font-black text-white font-[Montserrat,sans-serif] uppercase">Patio de Maquinarias MAVTEC</h4>
+                      <p className="mt-1 text-xs text-white/60 font-[Montserrat,sans-serif]">
+                        Atención directa y despacho de equipos para toda la región sur y alrededores.
+                      </p>
+                    </div>
+                  </div>
+                  {/* <a 
+                    href="https://goo.gl/maps/tuEnlaceRealAqui" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="shrink-0 border border-[#F5A623] px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-[#F5A623] transition-colors hover:bg-[#F5A623] hover:text-[#071324] font-[Montserrat,sans-serif]"
+                  >
+                    Cómo llegar
+                  </a> */}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
   )
