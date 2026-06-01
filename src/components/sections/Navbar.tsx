@@ -138,7 +138,7 @@ export default function Navbar() {
           </a>
           {/* ── DESKTOP LINKS (Panel Central) ── */}
           <ul className="hidden lg:flex items-stretch h-full">
-            {NAV_LINKS.map((link, i) => {
+            {NAV_LINKS.map((link, ) => {
               const isActive = active === link.href.replace("#", "");
               return (
                 <li key={link.href} className="flex">
@@ -158,7 +158,7 @@ export default function Navbar() {
                           : "text-white/20 group-hover:text-[#F5A623]/60"
                       }`}
                     >
-                      0{i + 1}
+                      {/* 0{i + 1} */}
                     </span>
 
                     {link.label}
