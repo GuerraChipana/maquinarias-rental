@@ -3,7 +3,7 @@ import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
 import { EMPRESA } from '@/lib/constants'
 
-// ─── Fuentes ──────────────────────────────────────────────────
+// ─── Fuentes ──────────────────────────────────────────────
 
 const inter = Inter({
   subsets:  ['latin'],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     description: EMPRESA.descripcion,
     images: [
       {
-        url:    '/public/MAVTEC-LOGO.svg',   // Agregar imagen 1200x630 en /public
+        url:    '/og-image.jpg',  // ⏳ Crear og-image.jpg 1200×630px en /public
         width:  1200,
         height: 630,
         alt:    `${EMPRESA.nombre} - Maquinaria Pesada`,
@@ -61,15 +61,16 @@ export const metadata: Metadata = {
     },
   },
 
-  // Icono del sitio — colocar favicons en /public
+  // Icono del sitio
+  // ⏳ Generar favicons en realfavicongenerator.net → subir a /public
   icons: {
     icon:    '/MAVTEC_ICON.svg',
-    apple:   '/apple-touch-icon.png',
-    shortcut:'/favicon-32x32.png',
+    // apple:   '/apple-touch-icon.png',  // ⏳ pendiente: generar y subir
+    // shortcut:'/favicon-32x32.png',     // ⏳ pendiente: generar y subir
   },
 }
 
-// ─── Layout Principal ─────────────────────────────────────────
+// ─── Layout Principal ─────────────────────────────────────
 
 export default function RootLayout({
   children,

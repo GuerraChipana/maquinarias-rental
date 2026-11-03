@@ -12,7 +12,7 @@ export const EMPRESA = {
   contacto: {
     email:    'atencionalcliente@mavtec.com',
     telefono: ['+51 957 682 641'],
-    whatsapp: '+51  957682641', // Con código de país para wa.me
+    whatsapp: '+51957682641', // Con código de país para wa.me
   },
 
   ubicacion: {
@@ -20,7 +20,7 @@ export const EMPRESA = {
     ciudad:    'Pisco',
     region:    'Ica',
     pais:      'Perú',
-    maps:      'https://maps.google.com/?q=Pisco,Ica,Peru', // Actualizar con link real
+    maps:      'https://maps.google.com/?q=-13.7122,-76.2022', // Pisco, Ica — coordenadas exactas
   },
 
   horario: '24/7 — Disponibles siempre',
