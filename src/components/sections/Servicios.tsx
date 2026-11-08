@@ -120,7 +120,7 @@ export default function Servicios() {
       className="relative overflow-hidden bg-gradient-to-b from-[#08111F] via-[#10284A] to-[#08111F] py-20 lg:py-24 px-5 lg:px-8"
     >
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.02]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#142e55_0%,transparent_60%)] opacity-30" />
       </div>
 

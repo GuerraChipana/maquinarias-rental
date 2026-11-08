@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
+import ClientProviders from '@/components/providers/ClientProviders'
 import { EMPRESA } from '@/lib/constants'
 
 // ─── Fuentes ──────────────────────────────────────────────
@@ -80,10 +81,13 @@ export default function RootLayout({
   return (
     <html
       lang="es"
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${montserrat.variable} scroll-smooth`}
     >
       <body className="font-sans antialiased bg-white text-gray-900 overflow-x-hidden">
-        {children}
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   )

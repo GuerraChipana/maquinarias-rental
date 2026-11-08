@@ -33,7 +33,30 @@ export interface CategoriaItem {
 
 // ─── Formulario de Cotización ─────────────────────────────────
 
+export interface ItemCotizacion {
+  maquinaId: string;
+  cantidad: number;
+}
+
+export interface ItemCotizacionPayload extends ItemCotizacion {
+  maquinaNombre: string;
+  imagen?: string;
+  categoria?: string;
+}
+
 export interface CotizacionForm {
+  // Equipos seleccionados
+  maquinas: ItemCotizacion[];
+
+  // Compatibilidad hacia atrás
+  maquinaId?: string;
+  cantidadUnidades?: number;
+
+  // Datos del servicio
+  fechaInicio: string;
+  fechaFin: string;
+  ubicacionObra: string;
+
   // Datos del contacto
   nombre: string;
   empresa: string;
@@ -41,19 +64,14 @@ export interface CotizacionForm {
   telefono: string;
   email: string;
 
-  // Datos del servicio
-  maquinaId: string;
-  fechaInicio: string;
-  fechaFin: string;
-  ubicacionObra: string;
-  cantidadUnidades: number;
-
   // Adicional
   mensaje?: string;
 }
 
 export interface CotizacionPayload extends CotizacionForm {
-  maquinaNombre: string; // Se resuelve en el cliente antes de enviar
+  maquinas: ItemCotizacionPayload[];
+  maquinaNombre: string; // Resumen legible (ej: "2x Excavadora, 1x Volquete")
+  cantidadUnidades: number; // Total de unidades
   fechaEnvio: string; // ISO string, generado automáticamente
 }
 

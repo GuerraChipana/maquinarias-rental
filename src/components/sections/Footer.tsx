@@ -1,6 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useRouter, usePathname } from 'next/navigation'
+import { useCotizacion } from '@/components/cotizacion/ModalCotizacion'
 import {
   Phone,
   Mail,
@@ -66,10 +68,32 @@ function ScrollTop() {
 
 /* ── Componente Principal ──────────────────────────────────── */
 export default function Footer() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const { openModal } = useCotizacion()
+
   const telefono = String(EMPRESA.contacto.telefono)
   const whatsappMsg = encodeURIComponent('¡Hola MAVTEC! Requiero información técnica para iniciar un alquiler.')
   const whatsappUrl = `https://wa.me/51${telefono.replace(/\s/g, '')}?text=${whatsappMsg}`
   const year = new Date().getFullYear()
+
+  const handleLinkClick = (href: string) => {
+    if (href === '#') return
+    if (href === '#catalogo') {
+      router.push('/catalogo')
+      return
+    }
+    if (href.startsWith('#')) {
+      if (pathname === '/') {
+        const el = document.querySelector(href)
+        el?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        router.push('/' + href)
+      }
+    } else {
+      router.push(href)
+    }
+  }
 
   return (
     <footer className="relative w-full bg-[#040a12] font-[Montserrat,sans-serif]">
@@ -126,7 +150,7 @@ export default function Footer() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => scrollTo('#cotizacion')}
+                onClick={() => openModal()}
                 className="group flex items-center justify-center gap-3 border border-[#F5A623] bg-transparent px-8 py-4 text-xs font-black uppercase tracking-widest text-[#F5A623] transition-colors hover:bg-[#F5A623] hover:text-[#040a12]"
               >
                 Solicitar Equipo
@@ -188,7 +212,7 @@ export default function Footer() {
                   {col.links.map(link => (
                     <li key={link.label}>
                       <button
-                        onClick={() => scrollTo(link.href)}
+                        onClick={() => handleLinkClick(link.href)}
                         className="group flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest hover:text-white transition-colors"
                       >
                         <span className="w-0 h-[2px] bg-[#F5A623] transition-all duration-300 group-hover:w-3" />

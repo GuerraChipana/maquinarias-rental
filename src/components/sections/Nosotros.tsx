@@ -77,7 +77,7 @@ function IndustrialStat({
           "polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)",
       }}
     >
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.03] pointer-events-none" />
 
       <div className="flex items-baseline gap-1 leading-none mb-2 relative z-10">
         <motion.span
@@ -158,7 +158,7 @@ export default function Nosotros() {
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute right-0 top-0 h-[800px] w-[800px] rounded-full bg-[#F5A623]/[0.04] blur-[120px] translate-x-1/3 -translate-y-1/4" />
         <div className="absolute left-0 bottom-0 h-[800px] w-[800px] rounded-full bg-[#081226]/80 blur-[150px] -translate-x-1/3 translate-y-1/4" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#ffffff_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.02]" />
       </div>
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-5 lg:px-12 xl:px-20 pt-10 md:pt-20">

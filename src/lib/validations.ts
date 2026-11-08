@@ -1,14 +1,29 @@
 import { z } from 'zod'
 
-/* ── Schema de cotización ──────────────────────────────────── */
+/* ── Schema de cada ítem de máquina ────────────────────────── */
+export const itemCotizacionSchema = z.object({
+  maquinaId: z.string().min(1, 'Seleccioná una máquina'),
+  cantidad:  z.number().int().min(1, 'Mínimo 1 unidad').max(20, 'Máximo 20 unidades'),
+})
+
+export type ItemCotizacionData = z.infer<typeof itemCotizacionSchema>
+
+/* ── Schema general de cotización ─────────────────────────── */
 export const cotizacionSchema = z
   .object({
+    /* Equipos a alquilar (1 o varios con su cantidad individual) */
+    maquinas: z
+      .array(itemCotizacionSchema)
+      .min(1, 'Debes agregar al menos una máquina para cotizar'),
+
+    /* Campos de compatibilidad */
+    maquinaId:        z.string().optional(),
+    cantidadUnidades: z.number().optional(),
+
     /* Datos del servicio */
-    maquinaId:        z.string().min(1, 'Seleccioná una máquina'),
     fechaInicio:      z.string().min(1, 'Fecha de inicio requerida'),
     fechaFin:         z.string().min(1, 'Fecha de fin requerida'),
     ubicacionObra:    z.string().min(3, 'Ingresá la ubicación de la obra'),
-    cantidadUnidades: z.number().int().min(1, 'Mínimo 1 unidad').max(20, 'Máximo 20 unidades'),
 
     /* Datos del contacto */
     nombre:   z.string().min(2, 'Ingresá tu nombre completo'),
@@ -40,11 +55,10 @@ export type CotizacionFormData = z.infer<typeof cotizacionSchema>
 
 /* Campos que se validan en cada paso */
 export const STEP1_FIELDS: (keyof CotizacionFormData)[] = [
-  'maquinaId',
+  'maquinas',
   'fechaInicio',
   'fechaFin',
   'ubicacionObra',
-  'cantidadUnidades',
 ]
 
 export const STEP2_FIELDS: (keyof CotizacionFormData)[] = [

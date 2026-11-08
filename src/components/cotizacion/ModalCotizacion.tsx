@@ -145,20 +145,28 @@ function ModalInternal({ isOpen, onClose, initialMaquinaId }: ModalInternalProps
   const [status, setStatus]   = useState<'idle' | 'submitting' | 'success'>('idle')
   const bodyRef = useRef<HTMLDivElement>(null)
 
+  const defaultMaquina = initialMaquinaId || maquinarias[0]?.id || 'exc-001';
+
   const methods = useForm<CotizacionFormData>({
     resolver: zodResolver(cotizacionSchema),
     defaultValues: {
-      maquinaId:        initialMaquinaId ?? '',
-      fechaInicio:      '',
-      fechaFin:         '',
-      ubicacionObra:    '',
+      maquinas: [
+        {
+          maquinaId: defaultMaquina,
+          cantidad: 1,
+        },
+      ],
+      maquinaId: defaultMaquina,
       cantidadUnidades: 1,
-      nombre:           '',
-      empresa:          '',
-      ruc:              '',
-      telefono:         '',
-      email:            '',
-      mensaje:          '',
+      fechaInicio: '',
+      fechaFin: '',
+      ubicacionObra: '',
+      nombre: '',
+      empresa: '',
+      ruc: '',
+      telefono: '',
+      email: '',
+      mensaje: '',
     },
     mode: 'onChange',
   })
@@ -166,7 +174,13 @@ function ModalInternal({ isOpen, onClose, initialMaquinaId }: ModalInternalProps
   /* Pre-seleccionar máquina si viene desde MachineCard */
   useEffect(() => {
     if (initialMaquinaId) {
-      methods.setValue('maquinaId', initialMaquinaId, { shouldValidate: true })
+      methods.setValue(
+        'maquinas',
+        [{ maquinaId: initialMaquinaId, cantidad: 1 }],
+        { shouldValidate: true }
+      );
+      methods.setValue('maquinaId', initialMaquinaId);
+      methods.setValue('cantidadUnidades', 1);
     }
   }, [initialMaquinaId, methods])
 
@@ -200,13 +214,34 @@ function ModalInternal({ isOpen, onClose, initialMaquinaId }: ModalInternalProps
     if (valid) setStep(2)
   }, [methods])
 
-  /* ── Enviar el formulario ── */
-/* ── Enviar el formulario a la API Real ── */
+  /* ── Enviar el formulario a la API Real ── */
   const onSubmit = methods.handleSubmit((data) => {
     setStatus('submitting')
     
-    const maquinaNombre = maquinarias.find(m => m.id === data.maquinaId)?.nombre ?? ''
-    const payload = { ...data, maquinaNombre, fechaEnvio: new Date().toISOString() }
+    // Mapear la lista completa de máquinas seleccionadas con sus detalles
+    const listaEquipos = data.maquinas.map((item) => {
+      const info = maquinarias.find((m) => m.id === item.maquinaId);
+      return {
+        maquinaId: item.maquinaId,
+        maquinaNombre: info?.nombre ?? item.maquinaId,
+        cantidad: item.cantidad,
+        imagen: info?.imagen,
+        categoria: info?.categoria,
+      };
+    });
+
+    const resumenNombres = listaEquipos
+      .map((item) => `${item.cantidad}x ${item.maquinaNombre}`)
+      .join(', ');
+    const totalUnidades = listaEquipos.reduce((sum, item) => sum + item.cantidad, 0);
+
+    const payload = {
+      ...data,
+      maquinas: listaEquipos,
+      maquinaNombre: resumenNombres,
+      cantidadUnidades: totalUnidades,
+      fechaEnvio: new Date().toISOString(),
+    };
 
     toast.promise(
       fetch('/api/cotizacion', {
@@ -234,9 +269,8 @@ function ModalInternal({ isOpen, onClose, initialMaquinaId }: ModalInternalProps
     )
   })
 
-  const maquinaSeleccionada = maquinarias.find(
-    m => m.id === methods.watch('maquinaId')
-  )
+  const maquinasList = methods.watch('maquinas') || [];
+  const totalEquipos = maquinasList.reduce((acc, curr) => acc + (curr.cantidad || 1), 0);
 
   return (
     <AnimatePresence>
@@ -331,27 +365,40 @@ function ModalInternal({ isOpen, onClose, initialMaquinaId }: ModalInternalProps
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ duration: 0.22 }}
                       >
-                        {/* Resumen de máquina seleccionada */}
-                        {maquinaSeleccionada && (
-                          <div className="mb-5 flex items-center gap-3 rounded-xl border border-[#F5A623]/15 bg-[#F5A623]/5 px-4 py-3">
-                            <div
-                              className="h-10 w-12 flex-shrink-0 rounded-lg bg-cover bg-center"
-                              style={{ backgroundImage: `url('${maquinaSeleccionada.imagen}')` }}
-                            />
-                            <div className="min-w-0">
-                              <p className="text-xs font-black text-white font-[Montserrat,sans-serif] truncate">
-                                {maquinaSeleccionada.nombre}
-                              </p>
-                              <p className="text-[10px] text-[#F5A623]/70 font-[Montserrat,sans-serif] capitalize">
-                                {maquinaSeleccionada.categoria.replace('-', ' ')} · {methods.getValues('cantidadUnidades')} unidad(es)
-                              </p>
+                        {/* Resumen de máquinas seleccionadas */}
+                        {maquinasList.length > 0 && (
+                          <div className="mb-5 rounded-xl border border-[#F5A623]/25 bg-[#F5A623]/5 p-3.5 space-y-2">
+                            <div className="flex items-center justify-between text-[11px] font-mono text-white/50 uppercase tracking-wider border-b border-white/5 pb-2">
+                              <span>Equipos a cotizar ({totalEquipos} {totalEquipos === 1 ? 'unidad' : 'unidades'})</span>
+                              <button
+                                type="button"
+                                onClick={() => setStep(1)}
+                                className="text-[#F5A623] hover:underline font-bold transition-colors"
+                              >
+                                Editar lista
+                              </button>
                             </div>
-                            <button
-                              onClick={() => setStep(1)}
-                              className="ml-auto text-[10px] text-white/30 hover:text-[#F5A623] font-semibold font-[Montserrat,sans-serif] underline underline-offset-2 transition-colors flex-shrink-0"
-                            >
-                              Cambiar
-                            </button>
+                            <div className="space-y-1.5 pt-1 max-h-36 overflow-y-auto">
+                              {maquinasList.map((item, idx) => {
+                                const m = maquinarias.find((maq) => maq.id === item.maquinaId);
+                                return (
+                                  <div
+                                    key={`${item.maquinaId}-${idx}`}
+                                    className="flex items-center justify-between text-xs font-bold text-white"
+                                  >
+                                    <span className="flex items-center gap-2 truncate">
+                                      <span className="text-[#F5A623] font-mono font-black shrink-0">
+                                        {item.cantidad}x
+                                      </span>
+                                      <span className="truncate">{m?.nombre ?? item.maquinaId}</span>
+                                    </span>
+                                    <span className="text-[10px] text-white/40 uppercase font-mono shrink-0 ml-2">
+                                      {m?.categoria.replace('-', ' ')}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
                         )}
                         <FormCotizacion />

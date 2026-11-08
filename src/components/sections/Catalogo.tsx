@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence, type Variants } from 'framer-motion'
 import { 
   Search, 
@@ -11,7 +12,8 @@ import {
   Settings2, 
   Barcode, 
   Activity,
-  Cpu
+  Cpu,
+  ChevronRight
 } from 'lucide-react'
 import MachineCard from '@/components/ui/MachineCard'
 import { maquinarias } from '@/data/maquinarias'
@@ -45,19 +47,25 @@ export default function Catalogo() {
   const [isFocused, setIsFocused] = useState(false)
   const { openModal } = useCotizacion()
 
+  // En la página principal solo mostramos las máquinas principales destacadas (máximo 6)
+  const maquinasLanding = useMemo(() => {
+    const destacadas = maquinarias.filter((m) => m.destacada === true);
+    return destacadas.length > 0 ? destacadas.slice(0, 6) : maquinarias.slice(0, 6);
+  }, []);
+
   const categorias = useMemo(() => {
-    const cats = Array.from(new Set(maquinarias.map(m => m.categoria)))
+    const cats = Array.from(new Set(maquinasLanding.map(m => m.categoria)))
     return [TODAS, ...cats]
-  }, [])
+  }, [maquinasLanding])
 
   const maquinasFiltradas = useMemo(() => {
-    return maquinarias.filter(m => {
+    return maquinasLanding.filter(m => {
       const matchCat = filtro === TODAS || m.categoria === filtro
       const matchSearch = m.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
                           m.descripcion.toLowerCase().includes(busqueda.toLowerCase())
       return matchCat && matchSearch
     })
-  }, [filtro, busqueda])
+  }, [maquinasLanding, filtro, busqueda])
 
   const handleCotizar = (maquina: Maquina) => {
     openModal(maquina.id)
@@ -302,6 +310,17 @@ export default function Catalogo() {
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* ── BOTÓN EXPLORAR CATÁLOGO COMPLETO ─────────────────────── */}
+        <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20">
+          <Link
+            href="/catalogo"
+            className="group flex items-center gap-3 bg-[#071324] px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-[#F5A623] hover:text-[#040a12] transition-all duration-300 shadow-xl border border-white/10 hover:border-[#F5A623]"
+          >
+            Ver Catálogo Completo
+            <ChevronRight size={16} strokeWidth={2.5} className="transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
 
       </div>
 

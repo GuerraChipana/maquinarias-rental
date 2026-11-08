@@ -105,6 +105,7 @@ export const maquinarias: Maquina[] = [
     ],
     imagen: "/images/machines/Retroexcavadora-con-cuchara.webp",
     disponible: true,
+    destacada: true,
     usos: ["Construcción", "Instalación de tuberías", "Zanjas", "Cimientos"],
   },
   {
@@ -122,6 +123,7 @@ export const maquinarias: Maquina[] = [
     ],
     imagen: "/images/machines/volquete.jpg",
     disponible: true,
+    destacada: true,
     usos: ["Transporte de material", "Minería", "Construcción", "Canteras"],
   },
 ];
