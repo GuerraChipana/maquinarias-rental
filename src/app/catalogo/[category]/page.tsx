@@ -1,409 +1,204 @@
-'use client';
+"use client";
 
-import { use, useState, useMemo } from 'react';
-import { notFound, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Search,
-  X,
-  SlidersHorizontal,
-  Activity,
-  HardHat,
-  ChevronRight,
-  ArrowLeft,
-  MessageSquare,
-  ShieldCheck,
-} from 'lucide-react';
-import { maquinarias } from '@/data/maquinarias';
-import MachineCard from '@/components/ui/MachineCard';
-import { useCotizacion } from '@/components/cotizacion/ModalCotizacion';
-import { EMPRESA } from '@/lib/constants';
-import type { Maquina } from '@/types';
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { Loader2, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import type { Maquina } from "@/types";
 
-type Props = {
-  params: Promise<{ category: string }>;
-};
+function normalizarCategoria(valor: string): string {
+  return valor
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, "-");
+}
 
-const TODAS = 'Todas';
+export default function CategoryCatalogPage() {
+  const params = useParams();
+  const categoryParam = params?.category as string;
+  // Limpiamos la categoría por si viene con codificación o espacios
+  const category = categoryParam ? normalizarCategoria(categoryParam) : "";
+  const [maquinas, setMaquinas] = useState<Maquina[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function CategoryPage({ params }: Props) {
-  const { category } = use(params);
-  const router = useRouter();
-  const { openModal } = useCotizacion();
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/maquinas");
 
-  const [busqueda, setBusqueda] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
+        if (!res.ok) {
+          throw new Error("Error al cargar la información del servidor");
+        }
 
-  // Lista de todas las categorías disponibles
-  const categorias = useMemo(() => {
-    const cats = Array.from(new Set(maquinarias.map((m) => m.categoria)));
-    return [TODAS, ...cats];
-  }, []);
+        const data: Maquina[] = await res.json();
 
-  // Conteo de máquinas por categoría
-  const conteoPorCategoria = useMemo(() => {
-    const counts: Record<string, number> = { [TODAS]: maquinarias.length };
-    maquinarias.forEach((m) => {
-      counts[m.categoria] = (counts[m.categoria] || 0) + 1;
-    });
-    return counts;
-  }, []);
+        if (category && category !== "todas") {
+          const filtradas = data.filter(
+            (m) => normalizarCategoria(m.categoria) === category,
+          );
 
-  // Verificar si la categoría existe en el catálogo
-  const categoriaExiste = categorias.includes(category);
-  if (!categoriaExiste) {
-    notFound();
-    return null;
+          setMaquinas(filtradas);
+        } else {
+          setMaquinas(data);
+        }
+      } catch (err: any) {
+        setError(err.message || "Ocurrió un error inesperado");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCatalog();
+  }, [category]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[400px] flex flex-col items-center justify-center bg-slate-50 text-slate-500 font-mono text-xs uppercase tracking-widest">
+        <Loader2 size={32} className="animate-spin text-[#F5A623] mb-4" />
+        Cargando Flota desde Google Sheets...
+      </div>
+    );
   }
 
-  // Filtrado de máquinas
-  const maquinasFiltradas = useMemo(() => {
-    return maquinarias.filter((m) => {
-      const matchCat = m.categoria === category;
-      const matchSearch =
-        m.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        m.descripcion.toLowerCase().includes(busqueda.toLowerCase());
-      return matchCat && matchSearch;
-    });
-  }, [category, busqueda]);
-
-  const handleCotizar = (maquina: Maquina) => {
-    openModal(maquina.id);
-  };
-
-  const handleSelectCategoria = (cat: string) => {
-    if (cat === TODAS) {
-      router.push('/catalogo');
-    } else {
-      router.push(`/catalogo/${cat}`);
-    }
-  };
-
-  const telefonoLimpio = String(EMPRESA.contacto.telefono).replace(/\s/g, '');
-  const whatsappUrl = `https://wa.me/51${telefonoLimpio}?text=${encodeURIComponent(
-    `¡Hola MAVTEC! Deseo cotizar equipos de la categoría ${category}.`
-  )}`;
-
+  if (error) {
+    return (
+      <div className="p-8 text-center text-red-600 bg-red-50 rounded-lg max-w-lg mx-auto mt-12">
+        <h2 className="text-xl font-bold mb-2">Error de Carga</h2>
+        <p className="text-sm">{error}</p>
+      </div>
+    );
+  }
+if (loading) {
   return (
-    <div className="w-full font-[Montserrat,sans-serif]">
-      {/* ══ HEADER HERO CON IMAGEN DE FONDO INDUSTRIAL ══════════════════ */}
-      <section className="relative bg-[#071324] border-b border-white/10 pt-12 pb-16 lg:pt-16 lg:pb-20 px-5 lg:px-12 xl:px-20 overflow-hidden">
-        {/* Imagen de fondo de maquinaria pesada */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 pointer-events-none"
-          style={{
-            backgroundImage: 'url("/images/movimiento-de-tierra-2.png")',
-          }}
-        />
+    <div className="min-h-[400px] flex flex-col items-center justify-center bg-slate-50 text-slate-500 font-mono text-xs uppercase tracking-widest">
+      <Loader2 size={32} className="animate-spin text-[#F5A623] mb-4" />
+      Sincronizando inventario...
+    </div>
+  );
+}
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071324] via-[#071324]/85 to-[#071324]/60 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071324] via-transparent to-transparent pointer-events-none" />
+if (error) {
+  return (
+    <div className="min-h-[400px] flex flex-col items-center justify-center text-center px-5">
+      <AlertCircle size={40} className="text-red-500 mb-3" />
+      <h2 className="text-xl font-black text-[#071324] uppercase">
+        Error al cargar el catálogo
+      </h2>
+      <p className="text-sm text-slate-500 mt-2">{error}</p>
+      <button
+        onClick={() => window.location.reload()}
+        className="mt-5 px-5 py-3 bg-[#071324] text-white font-bold text-xs uppercase rounded-xl"
+      >
+        Reintentar
+      </button>
+    </div>
+  );
+}
+  return (
+    <div className="container mx-auto px-5 lg:px-12 py-12 font-[Montserrat,sans-serif]">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <Link
+            href="/catalogo"
+            className="text-xs font-mono text-slate-500 hover:text-[#F5A623] flex items-center gap-1 mb-2 uppercase"
+          >
+            <ArrowLeft size={14} /> Volver al catálogo
+          </Link>
+          <h1 className="text-3xl font-black uppercase tracking-tight text-[#071324] capitalize">
+            {category && category !== "todas"
+              ? `Categoría: ${category.replace("-", " ")}`
+              : "Catálogo General de Flota"}
+          </h1>
+          <p className="text-xs text-slate-500 mt-1 font-mono">
+            {maquinas.length}{" "}
+            {maquinas.length === 1
+              ? "unidad encontrada"
+              : "unidades encontradas"}
+          </p>
+        </div>
+      </div>
 
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-
-        <div className="relative mx-auto max-w-[1440px] z-10">
-          {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-white/50 mb-6 uppercase">
-            <Link
-              href="/"
-              className="flex items-center gap-1.5 hover:text-[#F5A623] transition-colors"
+      {maquinas.length === 0 ? (
+        <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center max-w-md mx-auto shadow-sm">
+          <AlertCircle size={40} className="mx-auto text-amber-500 mb-3" />
+          <h3 className="text-base font-bold text-slate-800 uppercase">
+            No hay equipos en esta categoría
+          </h3>
+          <p className="text-xs text-slate-500 mt-1">
+            Intenta seleccionar otra categoría o verifica el Google Sheets.
+          </p>
+          <Link
+            href="/catalogo"
+            className="mt-5 inline-block px-5 py-2.5 bg-[#071324] text-white font-bold text-xs uppercase rounded-xl"
+          >
+            Ver todo el catálogo
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {maquinas.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
             >
-              <ArrowLeft size={13} />
-              Inicio
-            </Link>
-            <span className="text-white/20">/</span>
-            <Link
-              href="/catalogo"
-              className="hover:text-[#F5A623] transition-colors"
-            >
-              Catálogo
-            </Link>
-            <span className="text-white/20">/</span>
-            <span className="text-[#F5A623] font-bold capitalize">{category}</span>
-          </div>
-
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-            <div className="border-l-[6px] border-[#F5A623] pl-6 max-w-2xl">
-              <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-[#F5A623] uppercase block mb-2">
-                Flota Pesada Especializada
-              </span>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase leading-[0.95] capitalize">
-                {category}s <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5A623] via-[#ffc059] to-[#F5A623]">
-                  Certificadas.
-                </span>
-              </h1>
-              <p className="mt-4 text-xs md:text-sm text-white/70 leading-relaxed font-sans max-w-xl">
-                Unidades de alto rendimiento listas para alquiler con o sin operador. Mantenimiento preventivo al día y cobertura en Pisco, Ica y la región sur.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-4">
-              <div className="flex items-center gap-4 bg-[#040a12]/90 backdrop-blur-md border border-white/10 p-5 shadow-2xl">
-                <div className="bg-[#F5A623] p-3 text-[#040a12]">
-                  <Activity size={24} strokeWidth={2.5} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                    Categoría Activa
-                  </p>
-                  <p className="text-base font-black text-white leading-tight mt-0.5 uppercase">
-                    {category}
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-emerald-400 mt-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    {maquinasFiltradas.length} Unidades Disponibles
+              <div>
+                <div
+                  className="h-52 w-full bg-slate-100 bg-cover bg-center relative"
+                  style={{ backgroundImage: `url('${item.imagen}')` }}
+                >
+                  <span
+                    className={`absolute top-3 right-3 px-3 py-1 text-[10px] font-bold uppercase rounded-full shadow ${item.disponible ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}
+                  >
+                    {item.disponible ? "Disponible" : "En Obra"}
                   </span>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                <div className="p-6">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#F5A623] bg-amber-50 px-2 py-0.5 rounded">
+                    {item.categoria}
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 mt-2 uppercase">
+                    {item.nombre}
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">
+                    {item.descripcion}
+                  </p>
 
-      {/* ══ CONTENIDO CON SIDEBAR A UN COSTADO + GRID DE EQUIPOS ═════════ */}
-      <section className="relative w-full bg-[#eef1f5] py-12 lg:py-16 px-5 lg:px-12 xl:px-20 min-h-[700px] overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.14]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                'linear-gradient(#071324 1px, transparent 1px), linear-gradient(90deg, #071324 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
-            }}
-          />
-          <div className="absolute top-10 left-10 w-6 h-6 border-l-2 border-t-2 border-[#071324]" />
-          <div className="absolute top-10 right-10 w-6 h-6 border-r-2 border-t-2 border-[#071324]" />
-          <div className="absolute bottom-10 left-10 w-6 h-6 border-l-2 border-b-2 border-[#071324]" />
-          <div className="absolute bottom-10 right-10 w-6 h-6 border-r-2 border-b-2 border-[#071324]" />
-        </div>
-
-        <div className="relative mx-auto max-w-[1440px] z-10">
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-            {/* SIDEBAR LATERAL A UN COSTADO */}
-            <aside className="w-full lg:w-80 xl:w-84 shrink-0 space-y-6 lg:sticky lg:top-24">
-              
-              {/* Buscador */}
-              <div className="bg-[#071324] border border-[#142e55] p-5 shadow-xl">
-                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F5A623] mb-3 font-mono flex items-center gap-2">
-                  <Search size={13} /> Filtrar en {category}
-                </label>
-                <div
-                  className={`relative flex items-center bg-[#040a12] border-2 transition-all duration-300 ${
-                    isFocused
-                      ? 'border-[#F5A623] shadow-[0_0_15px_rgba(245,166,35,0.2)]'
-                      : 'border-white/10 hover:border-white/25'
-                  }`}
-                >
-                  <input
-                    type="text"
-                    placeholder="MODELO O CARACTERÍSTICA..."
-                    value={busqueda}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                    className="w-full bg-transparent px-3 py-3 text-xs font-bold text-white placeholder:text-white/30 focus:outline-none uppercase tracking-wider font-mono"
-                  />
-                  {busqueda && (
-                    <button
-                      onClick={() => setBusqueda('')}
-                      className="mr-2 p-1 text-[#040a12] bg-[#F5A623] hover:bg-white transition-colors"
-                      title="Limpiar búsqueda"
-                    >
-                      <X size={12} strokeWidth={3} />
-                    </button>
+                  {item.caracteristicas && item.caracteristicas.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-slate-100 space-y-1">
+                      <p className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                        Características Clave:
+                      </p>
+                      <ul className="text-[11px] text-slate-700 space-y-1">
+                        {item.caracteristicas.slice(0, 3).map((car, idx) => (
+                          <li
+                            key={idx}
+                            className="flex items-center gap-1.5 truncate"
+                          >
+                            <span className="h-1 w-1 rounded-full bg-[#F5A623]" />{" "}
+                            {car}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </div>
               </div>
-
-              {/* Categorías en Columna Vertical */}
-              <div className="bg-[#071324] border border-[#142e55] p-5 shadow-xl">
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 font-mono">
-                    <SlidersHorizontal size={13} className="text-[#F5A623]" /> Categorías
-                  </span>
-                  <span className="text-[10px] font-mono text-[#F5A623]">
-                    {categorias.length} Clases
-                  </span>
-                </div>
-
-                <div className="space-y-1.5">
-                  {categorias.map((cat, idx) => {
-                    const isActive = category === cat;
-                    const cantidad = conteoPorCategoria[cat] || 0;
-
-                    return (
-                      <button
-                        key={cat}
-                        onClick={() => handleSelectCategoria(cat)}
-                        className={`group relative flex w-full items-center justify-between px-3.5 py-3 text-left text-xs font-black uppercase tracking-wider transition-all duration-200 border ${
-                          isActive
-                            ? 'bg-[#F5A623] text-[#040a12] border-[#F5A623] shadow-md shadow-[#F5A623]/20 translate-x-1'
-                            : 'bg-[#040a12] text-white/70 border-white/[0.06] hover:border-[#F5A623]/50 hover:bg-[#0a182b] hover:text-white'
-                        }`}
-                      >
-                        {isActive && (
-                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#040a12]" />
-                        )}
-
-                        <div className="flex items-center gap-2.5">
-                          <span
-                            className={`font-mono text-[9px] px-1.5 py-0.5 transition-colors ${
-                              isActive
-                                ? 'bg-[#040a12]/20 text-[#040a12] font-black'
-                                : 'bg-white/[0.05] text-[#F5A623] group-hover:bg-[#F5A623] group-hover:text-[#040a12]'
-                            }`}
-                          >
-                            0{idx}
-                          </span>
-                          <span className="truncate">{cat.replace('-', ' ')}</span>
-                        </div>
-
-                        <span
-                          className={`font-mono text-[10px] ${
-                            isActive ? 'text-[#040a12] font-black' : 'text-white/40 group-hover:text-[#F5A623]'
-                          }`}
-                        >
-                          [{cantidad.toString().padStart(2, '0')}]
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Widget de Asesoría Inmediata */}
-              <div className="bg-[#071324] border-2 border-[#F5A623]/40 p-5 shadow-xl relative overflow-hidden">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-9 w-9 items-center justify-center bg-[#F5A623] text-[#040a12]">
-                    <HardHat size={20} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black text-white uppercase tracking-tight">
-                      Cotizar {category}
-                    </h4>
-                    <p className="text-[10px] font-mono text-white/40 uppercase">
-                      Despacho inmediato
-                    </p>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-white/60 mb-4 leading-relaxed font-sans">
-                  Consulte tarifas por hora, día o mes para proyectos de construcción y minería.
-                </p>
-
-                <div className="space-y-2">
-                  <button
-                    onClick={() => openModal()}
-                    className="w-full bg-[#F5A623] hover:bg-white text-[#040a12] py-2.5 text-xs font-black uppercase tracking-widest transition-colors shadow flex items-center justify-center gap-2"
-                  >
-                    Cotizar Ahora
-                    <ChevronRight size={14} />
-                  </button>
-
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-[#25D366] hover:bg-[#20b858] text-[#040a12] py-2.5 text-xs font-black uppercase tracking-widest transition-colors shadow flex items-center justify-center gap-2"
-                  >
-                    <MessageSquare size={14} />
-                    WhatsApp Directo
-                  </a>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-[10px] font-mono text-white/40">
-                  <ShieldCheck size={13} className="text-[#F5A623]" />
-                  <span>Flota certificada con póliza SCTR</span>
-                </div>
-              </div>
-
-            </aside>
-
-            {/* COLUMNA DERECHA (GRID DE MÁQUINAS) */}
-            <main className="flex-1 w-full min-w-0">
-              
-              <div className="mb-6 bg-white border border-slate-300 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="h-3 w-1 bg-[#F5A623]" />
-                  <h2 className="text-sm md:text-base font-black text-[#071324] uppercase tracking-wider capitalize">
-                    {category}s Disponibles
-                  </h2>
-                  <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 border border-slate-200">
-                    {maquinasFiltradas.length} {maquinasFiltradas.length === 1 ? 'unidad' : 'unidades'}
-                  </span>
-                </div>
-
+              <div className="p-6 pt-0">
                 <Link
-                  href="/catalogo"
-                  className="text-xs font-bold text-[#F5A623] hover:text-[#071324] uppercase tracking-wider flex items-center gap-1 font-mono transition-colors"
+                  href={`/cotizar?maquina=${item.id}`}
+                  className="w-full block text-center py-3 bg-[#071324] hover:bg-[#10243d] text-white font-black text-xs uppercase tracking-wider rounded-xl transition-colors shadow"
                 >
-                  <X size={13} />
-                  Ver Todas las Categorías
+                  Cotizar Equipo
                 </Link>
               </div>
-
-              <AnimatePresence mode="popLayout">
-                {maquinasFiltradas.length > 0 ? (
-                  <motion.div
-                    layout
-                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-                  >
-                    {maquinasFiltradas.map((maquina, i) => (
-                      <motion.div
-                        key={maquina.id}
-                        layout
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.4, delay: i * 0.04 }}
-                      >
-                        <MachineCard
-                          maquina={maquina}
-                          onCotizar={handleCotizar}
-                          index={i}
-                        />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-[#071324]/20 bg-white/90 p-8 shadow-sm max-w-lg mx-auto"
-                  >
-                    <div className="h-16 w-16 rounded-full bg-[#071324] text-[#F5A623] flex items-center justify-center mb-4">
-                      <HardHat size={30} />
-                    </div>
-                    <h3 className="text-xl font-black text-[#071324] uppercase tracking-tight">
-                      No hay coincidencias en {category}
-                    </h3>
-                    <p className="mt-2 text-xs text-slate-500 max-w-sm">
-                      No se encontraron resultados para &ldquo;{busqueda}&rdquo; en esta categoría.
-                    </p>
-                    <button
-                      onClick={() => router.push('/catalogo')}
-                      className="mt-6 px-6 py-3 bg-[#F5A623] text-[#040a12] font-black text-xs uppercase tracking-widest hover:bg-[#071324] hover:text-white transition-colors"
-                    >
-                      Ver Todo el Catálogo
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-            </main>
-
-          </div>
+            </div>
+          ))}
         </div>
-      </section>
+      )}
     </div>
   );
 }

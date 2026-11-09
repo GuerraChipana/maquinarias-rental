@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { useCotizacion } from '@/components/cotizacion/ModalCotizacion'
 import {
   Phone,
@@ -12,7 +13,8 @@ import {
   ArrowRight,
   HardHat,
   ShieldCheck,
-  Terminal
+  Terminal,
+  Lock,
 } from 'lucide-react'
 import { EMPRESA } from '@/lib/constants'
 
@@ -236,8 +238,14 @@ export default function Footer() {
             <span className="flex items-center gap-2 text-[#25D366]">
               <ShieldCheck size={12} /> ESTADO: EN LÍNEA
             </span>
-            {/* <span className="hidden sm:inline">|</span>
-            <span className="hidden sm:inline">VER_SISTEMA: 2.0.4</span> */}
+            <span>|</span>
+            <Link
+              href="/admin/catalogo"
+              className="flex items-center gap-1.5 text-white/30 hover:text-[#F5A623] transition-colors"
+              title="Panel de Administración del Catálogo"
+            >
+              <Lock size={10} /> Panel Admin
+            </Link>
           </div>
 
           <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest text-center">
