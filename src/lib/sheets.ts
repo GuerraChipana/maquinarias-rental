@@ -37,7 +37,7 @@ function parseCSV(csvText: string): Maquina[] {
 }
 
 export async function getMaquinasHibrido(): Promise<Maquina[]> {
-  const csvUrl = process.env.NEXT_PUBLIC_SHEETS_CSV_URL;
+  const csvUrl = process.env.SHEETS_CSV_URL;
 
   if (!csvUrl) {
     console.warn("No hay URL de Sheets configurada, usando datos locales.");
