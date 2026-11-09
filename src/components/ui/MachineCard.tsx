@@ -71,8 +71,8 @@ export default function MachineCard({
           <div
             className="h-full w-full bg-cover bg-center"
             style={{
-              backgroundImage: maquina.imagen?.trim()
-                ? `url("${maquina.imagen.trim()}")`
+              backgroundImage: maquina.imagen
+                ? `url("${maquina.imagen}")`
                 : "none",
             }}
           />
