@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Maquina } from '@/types';
-export default function DashboardCatalogo() {
+import React, { useState, useEffect } from "react";
+import { Maquina } from "@/types";
+interface DashboardCatalogoProps {
+  onLogout: () => void;
+}
+
+export default function DashboardCatalogo({
+  onLogout,
+}: DashboardCatalogoProps) {
   const [maquinas, setMaquinas] = useState<Maquina[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [notification, setNotification] = useState<string | null>(null);
@@ -14,11 +20,11 @@ export default function DashboardCatalogo() {
   const fetchMaquinas = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/maquinas');
+      const res = await fetch("/api/maquinas");
       const data = await res.json();
       setMaquinas(data);
     } catch (err) {
-      console.error('Error al cargar inventario:', err);
+      console.error("Error al cargar inventario:", err);
     } finally {
       setLoading(false);
     }
@@ -26,13 +32,13 @@ export default function DashboardCatalogo() {
 
   const showHybridNotice = (actionText: string) => {
     setNotification(
-      `Arquitectura Híbrida Activa: La acción '${actionText}' debe realizarse directamente en la hoja de cálculo de Google Sheets sincronizada para garantizar persistencia global.`
+      `Arquitectura Híbrida Activa: La acción '${actionText}' debe realizarse directamente en la hoja de cálculo de Google Sheets sincronizada para garantizar persistencia global.`,
     );
     setTimeout(() => setNotification(null), 8000);
   };
 
   const handleAdd = () => {
-    showHybridNotice('Agregar nueva maquinaria');
+    showHybridNotice("Agregar nueva maquinaria");
   };
 
   const handleDelete = (id: string) => {
@@ -47,15 +53,28 @@ export default function DashboardCatalogo() {
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Panel de Control de Catálogo</h2>
-          <p className="text-sm text-gray-500">Sincronizado vía CSV / Google Sheets API</p>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Panel de Control de Catálogo
+          </h2>
+          <p className="text-sm text-gray-500">
+            Sincronizado vía CSV / Google Sheets API
+          </p>
         </div>
-        <button
-          onClick={handleAdd}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm transition"
-        >
-          + Agregar Maquinaria
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={onLogout}
+            className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-md text-sm transition"
+          >
+            Cerrar sesión
+          </button>
+
+          <button
+            onClick={handleAdd}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm transition"
+          >
+            + Agregar Maquinaria
+          </button>
+        </div>
       </div>
 
       {notification && (
@@ -66,7 +85,9 @@ export default function DashboardCatalogo() {
       )}
 
       {loading ? (
-        <p className="text-center py-8 text-gray-500">Cargando inventario actual...</p>
+        <p className="text-center py-8 text-gray-500">
+          Cargando inventario actual...
+        </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -84,14 +105,20 @@ export default function DashboardCatalogo() {
             <tbody className="divide-y divide-gray-200 text-sm">
               {maquinas.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="p-3 font-mono text-xs text-gray-500">{item.id}</td>
-                  <td className="p-3 font-semibold text-gray-800">{item.nombre}</td>
+                  <td className="p-3 font-mono text-xs text-gray-500">
+                    {item.id}
+                  </td>
+                  <td className="p-3 font-semibold text-gray-800">
+                    {item.nombre}
+                  </td>
                   <td className="p-3 text-gray-600">{item.categoria}</td>
                   {/* <td className="p-3 text-gray-600">{item.marca} {item.modelo}</td> */}
                   {/* <td className="p-3">${item.precio.toLocaleString()}</td> */}
                   <td className="p-3">
-                    <span className={`px-2 py-1 text-xs rounded-full ${item.disponible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {item.disponible ? 'Disponible' : 'No Disponible'}
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${item.disponible ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                    >
+                      {item.disponible ? "Disponible" : "No Disponible"}
                     </span>
                   </td>
                   <td className="p-3 text-right space-x-2">
