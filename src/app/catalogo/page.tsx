@@ -23,6 +23,8 @@ import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
 import { EMPRESA } from "@/lib/constants";
 import type { Maquina } from "@/types";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 // Interfaz local para manejar la nueva estructura de categorías que viene del Sheet
 export interface CategoriaItem {
   id: string;
