@@ -1,19 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getMaquinasHibrido } from '@/lib/sheets';
+import { getMaquinariasHibrido } from '@/app/actions/db';
+
+// ESTA LÍNEA ES CLAVE: Fuerza a Next.js a no cachear esta ruta en Vercel
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const maquinas = await getMaquinasHibrido();
-    return NextResponse.json(maquinas, {
+    const data = await getMaquinariasHibrido();
+    return NextResponse.json(data, {
       status: 200,
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     });
   } catch (error) {
-    console.error('API Error /api/maquinas:', error);
+    console.error('API Error:', error);
     return NextResponse.json(
-      { error: 'Error al obtener el catálogo de máquinas' },
+      { error: 'Failed to retrieve equipment catalog' },
       { status: 500 }
     );
   }

@@ -5,7 +5,6 @@ export async function verificarPasswordAdmin(password: string) {
   const correctPassword = process.env.ADMIN_PASSWORD;
   
   if (!correctPassword) {
-    console.error("Falta configurar ADMIN_PASSWORD en el archivo .env");
     return false;
   }
 

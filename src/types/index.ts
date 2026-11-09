@@ -28,7 +28,7 @@ export interface Maquina {
 export interface CategoriaItem {
   id: CategoriaMaquina | "todas";
   label: string;
-  icono: string;
+  // icono: string;
 }
 
 // ─── Formulario de Cotización ─────────────────────────────────

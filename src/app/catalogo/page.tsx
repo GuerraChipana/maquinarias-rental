@@ -23,39 +23,41 @@ import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
 import { EMPRESA } from "@/lib/constants";
 import type { Maquina } from "@/types";
 
-const TODAS = "Todas";
+// Interfaz local para manejar la nueva estructura de categorías que viene del Sheet
+export interface CategoriaItem {
+  id: string;
+  label: string;
+}
+
+const TODAS = "todas";
 
 export default function CatalogPage() {
   const router = useRouter();
   const { openModal } = useCotizacion();
+  
   const [maquinarias, setMaquinarias] = useState<Maquina[]>([]);
+  const [categorias, setCategorias] = useState<CategoriaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filtro, setFiltro] = useState<string>(TODAS);
   const [busqueda, setBusqueda] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
-  // Lista de categorías únicas
-  const categorias = useMemo(() => {
-    const cats = Array.from(new Set(maquinarias.map((m) => m.categoria)));
-    return [TODAS, ...cats];
-  }, [maquinarias]);
-
-  // Conteo de máquinas por categoría
+  // Conteo de máquinas por categoría basándose en la ID de la categoría
   const conteoPorCategoria = useMemo(() => {
-    const counts: Record<string, number> = { [TODAS]: maquinarias.length };
-
+    const counts: Record<string, number> = {};
     maquinarias.forEach((m) => {
-      counts[m.categoria] = (counts[m.categoria] || 0) + 1;
+      const catKey = m.categoria ? m.categoria.toLowerCase() : "general";
+      counts[catKey] = (counts[catKey] || 0) + 1;
     });
-
     return counts;
   }, [maquinarias]);
 
   // Máquinas filtradas por categoría y término de búsqueda
   const maquinasFiltradas = useMemo(() => {
     return maquinarias.filter((m) => {
-      const matchCat = filtro === TODAS || m.categoria === filtro;
+      const mCat = m.categoria ? m.categoria.toLowerCase() : "general";
+      const matchCat = filtro === TODAS || mCat === filtro.toLowerCase();
       const matchSearch =
         m.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
         m.descripcion.toLowerCase().includes(busqueda.toLowerCase());
@@ -67,8 +69,8 @@ export default function CatalogPage() {
     openModal(maquina.id);
   };
 
-  const handleSelectCategoria = (cat: string) => {
-    setFiltro(cat);
+  const handleSelectCategoria = (catId: string) => {
+    setFiltro(catId);
   };
 
   const telefonoLimpio = String(EMPRESA.contacto.telefono).replace(/\s/g, "");
@@ -93,13 +95,31 @@ export default function CatalogPage() {
           throw new Error("No se pudo cargar el inventario.");
         }
 
-        const data: Maquina[] = await res.json();
+        const data = await res.json();
 
-        if (!Array.isArray(data)) {
+        // Lógica segura para soportar tanto el nuevo formato dual como el fallback local
+        if (data && typeof data === 'object' && !Array.isArray(data) && data.maquinaria) {
+          setMaquinarias(data.maquinaria);
+          
+          let cats = data.categorias || [];
+          // Garantizamos que la categoría "todas" siempre exista en el frontend
+          if (!cats.some((c: CategoriaItem) => c.id === TODAS)) {
+            cats = [{ id: TODAS, label: "Todas las Máquinas" }, ...cats];
+          }
+          setCategorias(cats);
+        } 
+        else if (Array.isArray(data)) {
+          // Fallback por si la API aún devuelve el array antiguo directamente
+          setMaquinarias(data);
+          const uniqueCats = Array.from(new Set(data.map((m) => m.categoria)));
+          setCategorias([
+            { id: TODAS, label: "Todas las Máquinas" },
+            ...uniqueCats.map(c => ({ id: c.toLowerCase(), label: c }))
+          ]);
+        } 
+        else {
           throw new Error("El servidor devolvió un formato inválido.");
         }
-
-        setMaquinarias(data);
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return;
 
@@ -116,6 +136,13 @@ export default function CatalogPage() {
 
     return () => controller.abort();
   }, []);
+
+  // Generar título del filtro activo para la barra superior
+  const getFiltroLabel = () => {
+    if (filtro === TODAS) return "Todos los Equipos Disponibles";
+    const found = categorias.find(c => c.id === filtro);
+    return found ? found.label.toUpperCase() : `${filtro.toUpperCase()}S`;
+  };
 
   return (
     <div className="w-full font-[Montserrat,sans-serif]">
@@ -255,7 +282,7 @@ export default function CatalogPage() {
                 </div>
               </div>
 
-              {/* Categorías en Columna Vertical */}
+              {/* Categorías en Columna Vertical dinámicas */}
               <div className="bg-[#071324] border border-[#142e55] p-5 shadow-xl">
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 font-mono">
@@ -269,13 +296,13 @@ export default function CatalogPage() {
 
                 <div className="space-y-1.5">
                   {categorias.map((cat, idx) => {
-                    const isActive = filtro === cat;
-                    const cantidad = conteoPorCategoria[cat] || 0;
+                    const isActive = filtro === cat.id;
+                    const cantidad = cat.id === TODAS ? maquinarias.length : (conteoPorCategoria[cat.id] || 0);
 
                     return (
                       <button
-                        key={cat}
-                        onClick={() => handleSelectCategoria(cat)}
+                        key={cat.id}
+                        onClick={() => handleSelectCategoria(cat.id)}
                         className={`group relative flex w-full items-center justify-between px-3.5 py-3 text-left text-xs font-black uppercase tracking-wider transition-all duration-200 border ${
                           isActive
                             ? "bg-[#F5A623] text-[#040a12] border-[#F5A623] shadow-md shadow-[#F5A623]/20 translate-x-1"
@@ -298,7 +325,7 @@ export default function CatalogPage() {
                             0{idx}
                           </span>
                           <span className="truncate">
-                            {cat.replace("-", " ")}
+                            {cat.label.replace("-", " ")}
                           </span>
                         </div>
 
@@ -373,9 +400,7 @@ export default function CatalogPage() {
                 <div className="flex items-center gap-3">
                   <span className="h-3 w-1 bg-[#F5A623]" />
                   <h2 className="text-sm md:text-base font-black text-[#071324] uppercase tracking-wider">
-                    {filtro === TODAS
-                      ? "Todos los Equipos Disponibles"
-                      : `${filtro.replace("-", " ")}s`}
+                    {getFiltroLabel()}
                   </h2>
                   <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 border border-slate-200">
                     {maquinasFiltradas.length}{" "}
@@ -399,7 +424,28 @@ export default function CatalogPage() {
 
               {/* Grid de Tarjetas */}
               <AnimatePresence mode="popLayout">
-                {maquinasFiltradas.length > 0 ? (
+                {loading ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center justify-center py-32 text-center"
+                  >
+                    <Loader2 size={40} className="text-[#F5A623] animate-spin mb-4" />
+                    <p className="text-xs font-black uppercase tracking-widest text-[#071324]/50 font-mono">
+                      Sincronizando Catálogo...
+                    </p>
+                  </motion.div>
+                ) : error ? (
+                   <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center justify-center py-20 text-center border-2 border-red-500/20 bg-red-50 p-8 shadow-sm max-w-lg mx-auto"
+                  >
+                    <AlertCircle size={30} className="text-red-500 mb-4" />
+                    <h3 className="text-xl font-black text-red-900 uppercase tracking-tight">Error de Conexión</h3>
+                    <p className="mt-2 text-xs text-red-700">{error}</p>
+                  </motion.div>
+                ) : maquinasFiltradas.length > 0 ? (
                   <motion.div
                     layout
                     className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"

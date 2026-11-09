@@ -131,13 +131,13 @@ export const maquinarias: Maquina[] = [
 // ─── Categorías del catálogo ──────────────────────────────────
 
 export const categorias: CategoriaItem[] = [
-  { id: "todas", label: "Todas", icono: "LayoutGrid" },
-  { id: "excavadora", label: "Excavadoras", icono: "Shovel" },
-  { id: "compactadora", label: "Compactadoras", icono: "Layers" },
-  { id: "tractor", label: "Tractores", icono: "Tractor" },
-  { id: "camion-cisterna", label: "Camiones Cisterna", icono: "Truck" },
-  { id: "retroexcavadora", label: "Retroexcavadoras", icono: "Construction" },
-  { id: "volquete", label: "Volquetes", icono: "Truck" },
+  { id: "todas", label: "Todas" },
+  { id: "excavadora", label: "Excavadoras" },
+  { id: "compactadora", label: "Compactadoras" },
+  { id: "tractor", label: "Tractores" },
+  { id: "camion-cisterna", label: "Camiones Cisterna" },
+  { id: "retroexcavadora", label: "Retroexcavadoras" },
+  { id: "volquete", label: "Volquetes" },
 ];
 
 // ─── Servicios ────────────────────────────────────────────────
@@ -149,13 +149,9 @@ export const servicios: Servicio[] = [
     descripcion:
       "Equipos de alto rendimiento para minería, construcción y movimiento de tierras.",
     icono: "Tractor",
-    imagen: "https://develon-ce.cl/wp-content/uploads/2025/12/Como-la-maquinaria-pesada-optimiza-proyectos-de-construccion-e-infraestructura.jpg",
-    beneficios: [
-      "Excavadoras",
-      "Tractores D6-D8",
-      "Compactadoras",
-      "Grúas",
-    ],
+    imagen:
+      "https://develon-ce.cl/wp-content/uploads/2025/12/Como-la-maquinaria-pesada-optimiza-proyectos-de-construccion-e-infraestructura.jpg",
+    beneficios: ["Excavadoras", "Tractores D6-D8", "Compactadoras", "Grúas"],
     span: "lg:col-span-7 min-h-[360px] lg:min-h-[420px]",
   },
   {
@@ -165,10 +161,7 @@ export const servicios: Servicio[] = [
       "Suministro certificado para campamentos y operaciones en Pisco e Ica.",
     icono: "Droplets",
     imagen: "/AguaPotable.png",
-    beneficios: [
-      "Calidad certificada",
-      "Atención 24/7",
-    ],
+    beneficios: ["Calidad certificada", "Atención 24/7"],
     span: "lg:col-span-5 min-h-[360px] lg:min-h-[420px]",
   },
   {
@@ -177,11 +170,9 @@ export const servicios: Servicio[] = [
     descripcion:
       "Control de polvo, riego y abastecimiento para operaciones industriales.",
     icono: "Truck",
-    imagen: "https://previews.123rf.com/images/rfoxfoto/rfoxfoto1411/rfoxfoto141100255/34010733-large-tank-truck-working-at-a-construction-site.jpg",
-    beneficios: [
-      "5k a 20k L",
-      "Riego a presión",
-    ],
+    imagen:
+      "https://previews.123rf.com/images/rfoxfoto/rfoxfoto1411/rfoxfoto141100255/34010733-large-tank-truck-working-at-a-construction-site.jpg",
+    beneficios: ["5k a 20k L", "Riego a presión"],
     span: "lg:col-span-5 min-h-[320px] lg:min-h-[340px]",
   },
   {
@@ -190,12 +181,9 @@ export const servicios: Servicio[] = [
     descripcion:
       "Personal capacitado bajo estándares estrictos de seguridad para zonas de alta exigencia.",
     icono: "HardHat",
-    imagen: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1800&auto=format&fit=crop",
-    beneficios: [
-      "Licencias vigentes",
-      "Experiencia minera",
-      "SCTR activo",
-    ],
+    imagen:
+      "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1800&auto=format&fit=crop",
+    beneficios: ["Licencias vigentes", "Experiencia minera", "SCTR activo"],
     span: "lg:col-span-7 min-h-[320px] lg:min-h-[340px]",
   },
 ];
