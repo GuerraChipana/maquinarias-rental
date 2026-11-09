@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useMemo, useEffect } from "react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   X,
@@ -16,37 +17,40 @@ import {
   MessageSquare,
   ShieldCheck,
   CheckCircle2,
-} from 'lucide-react';
-import { maquinarias } from '@/data/maquinarias';
-import MachineCard from '@/components/ui/MachineCard';
-import { useCotizacion } from '@/components/cotizacion/ModalCotizacion';
-import { EMPRESA } from '@/lib/constants';
-import type { Maquina } from '@/types';
+} from "lucide-react";
+import MachineCard from "@/components/ui/MachineCard";
+import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
+import { EMPRESA } from "@/lib/constants";
+import type { Maquina } from "@/types";
 
-const TODAS = 'Todas';
+const TODAS = "Todas";
 
 export default function CatalogPage() {
   const router = useRouter();
   const { openModal } = useCotizacion();
-
+  const [maquinarias, setMaquinarias] = useState<Maquina[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filtro, setFiltro] = useState<string>(TODAS);
-  const [busqueda, setBusqueda] = useState('');
+  const [busqueda, setBusqueda] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
   // Lista de categorías únicas
   const categorias = useMemo(() => {
     const cats = Array.from(new Set(maquinarias.map((m) => m.categoria)));
     return [TODAS, ...cats];
-  }, []);
+  }, [maquinarias]);
 
   // Conteo de máquinas por categoría
   const conteoPorCategoria = useMemo(() => {
     const counts: Record<string, number> = { [TODAS]: maquinarias.length };
+
     maquinarias.forEach((m) => {
       counts[m.categoria] = (counts[m.categoria] || 0) + 1;
     });
+
     return counts;
-  }, []);
+  }, [maquinarias]);
 
   // Máquinas filtradas por categoría y término de búsqueda
   const maquinasFiltradas = useMemo(() => {
@@ -57,7 +61,7 @@ export default function CatalogPage() {
         m.descripcion.toLowerCase().includes(busqueda.toLowerCase());
       return matchCat && matchSearch;
     });
-  }, [filtro, busqueda]);
+  }, [maquinarias, filtro, busqueda]);
 
   const handleCotizar = (maquina: Maquina) => {
     openModal(maquina.id);
@@ -67,10 +71,51 @@ export default function CatalogPage() {
     setFiltro(cat);
   };
 
-  const telefonoLimpio = String(EMPRESA.contacto.telefono).replace(/\s/g, '');
+  const telefonoLimpio = String(EMPRESA.contacto.telefono).replace(/\s/g, "");
   const whatsappUrl = `https://wa.me/51${telefonoLimpio}?text=${encodeURIComponent(
-    '¡Hola MAVTEC! Deseo cotizar maquinaria de su catálogo completo.'
+    "¡Hola MAVTEC! Deseo cotizar maquinaria de su catálogo completo.",
   )}`;
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchMaquinarias() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await fetch("/api/maquinas", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error("No se pudo cargar el inventario.");
+        }
+
+        const data: Maquina[] = await res.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("El servidor devolvió un formato inválido.");
+        }
+
+        setMaquinarias(data);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return;
+
+        console.error("Error cargando catálogo:", err);
+        setError(err instanceof Error ? err.message : "Error inesperado.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchMaquinarias();
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className="w-full font-[Montserrat,sans-serif]">
@@ -92,8 +137,9 @@ export default function CatalogPage() {
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
-            backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
+            backgroundImage:
+              "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
           }}
         />
 
@@ -124,8 +170,9 @@ export default function CatalogPage() {
                 </span>
               </h1>
               <p className="mt-4 text-xs md:text-sm text-white/70 leading-relaxed font-sans max-w-xl">
-                Flota moderna y certificada para minería, obras civiles y movimiento de tierras.
-                Equipos listos para despacho en Pisco, Ica y toda la región sur del Perú.
+                Flota moderna y certificada para minería, obras civiles y
+                movimiento de tierras. Equipos listos para despacho en Pisco,
+                Ica y toda la región sur del Perú.
               </p>
             </div>
 
@@ -161,8 +208,8 @@ export default function CatalogPage() {
             className="absolute inset-0"
             style={{
               backgroundImage:
-                'linear-gradient(#071324 1px, transparent 1px), linear-gradient(90deg, #071324 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
+                "linear-gradient(#071324 1px, transparent 1px), linear-gradient(90deg, #071324 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
             }}
           />
           <div className="absolute top-10 left-10 w-6 h-6 border-l-2 border-t-2 border-[#071324]" />
@@ -173,10 +220,8 @@ export default function CatalogPage() {
 
         <div className="relative mx-auto max-w-[1440px] z-10">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-
             {/* ── 2.1 SIDEBAR LATERAL DE FILTROS (A UN COSTADO) ────── */}
             <aside className="w-full lg:w-80 xl:w-84 shrink-0 space-y-6 lg:sticky lg:top-24">
-              
               {/* Buscador */}
               <div className="bg-[#071324] border border-[#142e55] p-5 shadow-xl">
                 <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F5A623] mb-3 font-mono flex items-center gap-2">
@@ -185,8 +230,8 @@ export default function CatalogPage() {
                 <div
                   className={`relative flex items-center bg-[#040a12] border-2 transition-all duration-300 ${
                     isFocused
-                      ? 'border-[#F5A623] shadow-[0_0_15px_rgba(245,166,35,0.2)]'
-                      : 'border-white/10 hover:border-white/25'
+                      ? "border-[#F5A623] shadow-[0_0_15px_rgba(245,166,35,0.2)]"
+                      : "border-white/10 hover:border-white/25"
                   }`}
                 >
                   <input
@@ -200,7 +245,7 @@ export default function CatalogPage() {
                   />
                   {busqueda && (
                     <button
-                      onClick={() => setBusqueda('')}
+                      onClick={() => setBusqueda("")}
                       className="mr-2 p-1 text-[#040a12] bg-[#F5A623] hover:bg-white transition-colors"
                       title="Limpiar búsqueda"
                     >
@@ -214,7 +259,8 @@ export default function CatalogPage() {
               <div className="bg-[#071324] border border-[#142e55] p-5 shadow-xl">
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 font-mono">
-                    <SlidersHorizontal size={13} className="text-[#F5A623]" /> Categorías
+                    <SlidersHorizontal size={13} className="text-[#F5A623]" />{" "}
+                    Categorías
                   </span>
                   <span className="text-[10px] font-mono text-[#F5A623]">
                     {categorias.length} Clases
@@ -232,8 +278,8 @@ export default function CatalogPage() {
                         onClick={() => handleSelectCategoria(cat)}
                         className={`group relative flex w-full items-center justify-between px-3.5 py-3 text-left text-xs font-black uppercase tracking-wider transition-all duration-200 border ${
                           isActive
-                            ? 'bg-[#F5A623] text-[#040a12] border-[#F5A623] shadow-md shadow-[#F5A623]/20 translate-x-1'
-                            : 'bg-[#040a12] text-white/70 border-white/[0.06] hover:border-[#F5A623]/50 hover:bg-[#0a182b] hover:text-white'
+                            ? "bg-[#F5A623] text-[#040a12] border-[#F5A623] shadow-md shadow-[#F5A623]/20 translate-x-1"
+                            : "bg-[#040a12] text-white/70 border-white/[0.06] hover:border-[#F5A623]/50 hover:bg-[#0a182b] hover:text-white"
                         }`}
                       >
                         {/* Indicador de activo */}
@@ -245,22 +291,26 @@ export default function CatalogPage() {
                           <span
                             className={`font-mono text-[9px] px-1.5 py-0.5 transition-colors ${
                               isActive
-                                ? 'bg-[#040a12]/20 text-[#040a12] font-black'
-                                : 'bg-white/[0.05] text-[#F5A623] group-hover:bg-[#F5A623] group-hover:text-[#040a12]'
+                                ? "bg-[#040a12]/20 text-[#040a12] font-black"
+                                : "bg-white/[0.05] text-[#F5A623] group-hover:bg-[#F5A623] group-hover:text-[#040a12]"
                             }`}
                           >
                             0{idx}
                           </span>
-                          <span className="truncate">{cat.replace('-', ' ')}</span>
+                          <span className="truncate">
+                            {cat.replace("-", " ")}
+                          </span>
                         </div>
 
                         {/* Cantidad de unidades */}
                         <span
                           className={`font-mono text-[10px] ${
-                            isActive ? 'text-[#040a12] font-black' : 'text-white/40 group-hover:text-[#F5A623]'
+                            isActive
+                              ? "text-[#040a12] font-black"
+                              : "text-white/40 group-hover:text-[#F5A623]"
                           }`}
                         >
-                          [{cantidad.toString().padStart(2, '0')}]
+                          [{cantidad.toString().padStart(2, "0")}]
                         </span>
                       </button>
                     );
@@ -285,7 +335,8 @@ export default function CatalogPage() {
                 </div>
 
                 <p className="text-[11px] text-white/60 mb-4 leading-relaxed font-sans">
-                  Cotizamos equipos para minería y construcción con o sin operador certificado.
+                  Cotizamos equipos para minería y construcción con o sin
+                  operador certificado.
                 </p>
 
                 <div className="space-y-2">
@@ -313,21 +364,22 @@ export default function CatalogPage() {
                   <span>Flota certificada con póliza SCTR</span>
                 </div>
               </div>
-
             </aside>
 
             {/* ── 2.2 GRID PRINCIPAL DE MÁQUINAS (COLUMNA DERECHA) ────── */}
             <main className="flex-1 w-full min-w-0">
-              
               {/* Barra de Encabezado de Resultados */}
               <div className="mb-6 bg-white border border-slate-300 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="h-3 w-1 bg-[#F5A623]" />
                   <h2 className="text-sm md:text-base font-black text-[#071324] uppercase tracking-wider">
-                    {filtro === TODAS ? 'Todos los Equipos Disponibles' : `${filtro.replace('-', ' ')}s`}
+                    {filtro === TODAS
+                      ? "Todos los Equipos Disponibles"
+                      : `${filtro.replace("-", " ")}s`}
                   </h2>
                   <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 border border-slate-200">
-                    {maquinasFiltradas.length} {maquinasFiltradas.length === 1 ? 'unidad' : 'unidades'}
+                    {maquinasFiltradas.length}{" "}
+                    {maquinasFiltradas.length === 1 ? "unidad" : "unidades"}
                   </span>
                 </div>
 
@@ -335,7 +387,7 @@ export default function CatalogPage() {
                   <button
                     onClick={() => {
                       setFiltro(TODAS);
-                      setBusqueda('');
+                      setBusqueda("");
                     }}
                     className="text-xs font-bold text-[#F5A623] hover:text-[#071324] uppercase tracking-wider flex items-center gap-1 self-start sm:self-auto font-mono transition-colors"
                   >
@@ -383,13 +435,14 @@ export default function CatalogPage() {
                       No se encontraron equipos
                     </h3>
                     <p className="mt-2 text-xs text-slate-500 max-w-sm">
-                      No hay unidades que coincidan con &ldquo;{busqueda || filtro}&rdquo;.
-                      Intenta con otra categoría o restablece los filtros.
+                      No hay unidades que coincidan con &ldquo;
+                      {busqueda || filtro}&rdquo;. Intenta con otra categoría o
+                      restablece los filtros.
                     </p>
                     <button
                       onClick={() => {
                         setFiltro(TODAS);
-                        setBusqueda('');
+                        setBusqueda("");
                       }}
                       className="mt-6 px-6 py-3 bg-[#F5A623] text-[#040a12] font-black text-xs uppercase tracking-widest hover:bg-[#071324] hover:text-white transition-colors"
                     >
@@ -398,9 +451,7 @@ export default function CatalogPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-
             </main>
-
           </div>
         </div>
       </section>
