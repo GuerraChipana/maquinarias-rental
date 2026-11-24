@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import CatalogoExplorer from '@/modules/catalogo/components/CatalogoExplorer'
 import { SITE_URL } from '@/shared/config/seo'
+import { getMaquinariasHibrido } from '@/modules/catalogo/actions/catalogo.actions'
 
 const description =
   'Explora el catálogo de MAVTEC: excavadoras, retroexcavadoras, tractores sobre orugas, compactadoras, volquetes y camiones cisterna para alquiler en Pisco e Ica.'
@@ -24,6 +25,17 @@ export const metadata: Metadata = {
   },
 }
 
-export default function CatalogoPage() {
-  return <CatalogoExplorer />
+export default async function CatalogoPage() {
+  const { maquinaria, categorias } = await getMaquinariasHibrido()
+
+  const categoriasParaVista = categorias.some((categoria) => categoria.id === 'todas')
+    ? categorias
+    : [{ id: 'todas' as const, label: 'Todas las máquinas' }, ...categorias]
+
+  return (
+    <CatalogoExplorer
+      initialMaquinarias={maquinaria}
+      initialCategorias={categoriasParaVista}
+    />
+  )
 }
