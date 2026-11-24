@@ -79,11 +79,13 @@ export default function Hero() {
         className="absolute inset-0 z-0 will-change-transform"
       >
         {/* Imagen de fondo — usamos gradient de placeholder hasta tener foto real */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: 'url("/images/movimiento-de-tierra-2.png")',
-          }}
+        <img
+          src="/images/movimiento-de-tierra-2.png"
+          alt="Maquinaria pesada trabajando en un proyecto de movimiento de tierras en la región Ica"
+          title="Maquinaria pesada para minería y construcción - MAVTEC"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
         {/* Capas de overlay para legibilidad */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0e2140]/90 via-[#1A3C6E]/20 to-[#1A3C6E]/40" />
