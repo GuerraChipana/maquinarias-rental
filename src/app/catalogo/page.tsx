@@ -1,6 +1,6 @@
-import export const revalidate = 60
+import type { Metadata } from 'next'
 
-type { Metadata } from 'next'
+export const revalidate = 60
 import CatalogoExplorer from '@/modules/catalogo/components/CatalogoExplorer'
 import { SITE_URL } from '@/shared/config/seo'
 import { getMaquinariasHibrido } from '@/modules/catalogo/actions/catalogo.actions'
