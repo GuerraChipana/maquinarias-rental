@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,13 +28,23 @@ export interface CategoriaItem {
 
 const TODAS = "todas";
 
-export default function CatalogPage() {
+interface CatalogPageProps {
+  initialMaquinarias: Maquina[];
+  initialCategorias: CategoriaItem[];
+}
+
+export default function CatalogPage({
+  initialMaquinarias,
+  initialCategorias,
+}: CatalogPageProps) {
   const { openModal } = useCotizacion();
   
-  const [maquinarias, setMaquinarias] = useState<Maquina[]>([]);
-  const [categorias, setCategorias] = useState<CategoriaItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // El inventario llega desde el Server Component para que el HTML inicial
+  // ya contenga los nombres y descripciones de los equipos (SEO y accesibilidad).
+  const [maquinarias] = useState<Maquina[]>(initialMaquinarias);
+  const [categorias] = useState<CategoriaItem[]>(initialCategorias);
+  const loading = false;
+  const error: string | null = null;
   const [filtro, setFiltro] = useState<string>(TODAS);
   const [busqueda, setBusqueda] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -73,64 +83,7 @@ export default function CatalogPage() {
     "¡Hola MAVTEC! Deseo cotizar maquinaria de su catálogo completo.",
   );
 
-  useEffect(() => {
-    const controller = new AbortController();
 
-    async function fetchMaquinarias() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const res = await fetch("/api/maquinas", {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-
-        if (!res.ok) {
-          throw new Error("No se pudo cargar el inventario.");
-        }
-
-        const data = await res.json();
-
-        // Lógica segura para soportar tanto el nuevo formato dual como el fallback local
-        if (data && typeof data === 'object' && !Array.isArray(data) && data.maquinaria) {
-          setMaquinarias(data.maquinaria);
-          
-          let cats = data.categorias || [];
-          // Garantizamos que la categoría "todas" siempre exista en el frontend
-          if (!cats.some((c: CategoriaItem) => c.id === TODAS)) {
-            cats = [{ id: TODAS, label: "Todas las Máquinas" }, ...cats];
-          }
-          setCategorias(cats);
-        } 
-        else if (Array.isArray(data)) {
-          // Fallback por si la API aún devuelve el array antiguo directamente
-          setMaquinarias(data);
-          const uniqueCats = Array.from(new Set(data.map((m) => m.categoria)));
-          setCategorias([
-            { id: TODAS, label: "Todas las Máquinas" },
-            ...uniqueCats.map(c => ({ id: c.toLowerCase(), label: c }))
-          ]);
-        } 
-        else {
-          throw new Error("El servidor devolvió un formato inválido.");
-        }
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") return;
-
-        console.error("Error cargando catálogo:", err);
-        setError(err instanceof Error ? err.message : "Error inesperado.");
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchMaquinarias();
-
-    return () => controller.abort();
-  }, []);
 
   // Generar título del filtro activo para la barra superior
   const getFiltroLabel = () => {
