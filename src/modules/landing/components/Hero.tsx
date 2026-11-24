@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronRight, ArrowDown, Shield, Clock, MapPin } from "lucide-react";
-import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
+import { useCotizacion } from "@/modules/cotizacion/components/ModalCotizacion";
 
 /* ── Contador animado simple ──────────────────────────── */
 function StatItem({
