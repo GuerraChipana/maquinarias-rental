@@ -217,7 +217,7 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
               <CheckCircle2 size={13} /> Sincronización BIDIRECCIONAL activa con Google Sheets
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
             <button onClick={() => setShowCatForm(!showCatForm)} className="flex w-full items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors sm:w-auto">
               <Layers size={16} /> {showCatForm ? 'Cerrar Categoría' : '+ Nueva Categoría'}
             </button>
