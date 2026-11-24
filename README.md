@@ -42,6 +42,7 @@ No publicar un despliegue si la compilación falla o si no se han configurado la
 |---|---|
 | `/` | Página de presentación de MAVTEC |
 | `/catalogo` | Catálogo de maquinaria con búsqueda y filtros |
+| `/catalogo/[category]` | Página específica e indexable por categoría de maquinaria |
 | `/admin/catalogo` | Panel privado para administrar categorías y equipos |
 | `/api/maquinas` | Endpoint de consulta del inventario |
 | `/api/cotizacion` | Endpoint que valida y procesa solicitudes de cotización |
