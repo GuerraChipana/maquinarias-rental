@@ -37,7 +37,7 @@ function Avatar({ nombre, imagen }: { nombre: string; imagen?: string }) {
   if (imagen) {
     return (
       <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl shadow-md border-2 border-white">
-        <img src={imagen} alt={nombre} className="h-full w-full object-cover" />
+        <img src={imagen} alt={`Fotografía de ${nombre}, cliente de MAVTEC`} title={`Testimonio de ${nombre} sobre los servicios de MAVTEC`} loading="lazy" decoding="async" className="h-full w-full object-cover" />
       </div>
     )
   }
