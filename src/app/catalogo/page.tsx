@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-
-export const revalidate = 60
 import CatalogoExplorer from '@/modules/catalogo/components/CatalogoExplorer'
 import { SITE_URL } from '@/shared/config/seo'
 import { getMaquinariasHibrido } from '@/modules/catalogo/actions/catalogo.actions'
+
+export const revalidate = 60
 
 const description =
   'Explora el catálogo de MAVTEC: excavadoras, retroexcavadoras, tractores sobre orugas, compactadoras, volquetes y camiones cisterna para alquiler en Pisco e Ica.'
