@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MAVTEC E.I.R.L. — Sitio web y catálogo de maquinaria
 
-## Getting Started
+Aplicación web corporativa de MAVTEC para presentar servicios de alquiler de maquinaria pesada y transporte de agua, consultar el inventario y recibir solicitudes de cotización.
 
-First, run the development server:
+## Tecnologías
+
+- Next.js 16 con App Router
+- React 19 y TypeScript
+- Tailwind CSS
+- Framer Motion
+- React Hook Form y Zod para formularios y validación
+- Google Apps Script / Google Sheets como integración opcional del catálogo
+- Resend para el envío de correos de cotización
+
+## Requisitos
+
+- Node.js compatible con Next.js 16
+- npm
+- Variables de entorno del proyecto configuradas según el entorno de ejecución
+
+## Instalación y ejecución local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Comprobaciones antes de desplegar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+No publicar un despliegue si la compilación falla o si no se han configurado las variables necesarias para las funciones que se utilizarán.
 
-To learn more about Next.js, take a look at the following resources:
+## Rutas principales
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Ruta | Función |
+|---|---|
+| `/` | Página de presentación de MAVTEC |
+| `/catalogo` | Catálogo de maquinaria con búsqueda y filtros |
+| `/admin/catalogo` | Panel privado para administrar categorías y equipos |
+| `/api/maquinas` | Endpoint de consulta del inventario |
+| `/api/cotizacion` | Endpoint que valida y procesa solicitudes de cotización |
+| `/robots.txt` | Directivas de rastreo para buscadores |
+| `/sitemap.xml` | Mapa de URLs públicas para buscadores |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Variables de entorno
 
-## Deploy on Vercel
+Configurar en el entorno local o en el proveedor de despliegue. No guardar secretos en Git.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Variable | Función |
+|---|---|
+| `ADMIN_PASSWORD` | Contraseña del panel administrativo |
+| `GOOGLE_APPS_SCRIPT_URL` | Integración con Google Sheets |
+| `RESEND_API_KEY` | Clave privada de Resend |
+| `EMAIL_FROM` | Remitente verificado para los correos |
+| `EMAIL_EMPRESA` | Correo que recibe las cotizaciones |
+| `NEXT_PUBLIC_SITE_URL` | Dominio canónico de producción, por ejemplo `https://www.tudominio.pe` |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El sitemap y las URLs canónicas se generan con el dominio indicado en `NEXT_PUBLIC_SITE_URL`. Definirlo antes de registrar el sitio en Google Search Console.
+
+## Documentación del proyecto
+
+- **[MANUAL_USUARIO.md](./MANUAL_USUARIO.md)** — guía del visitante, proceso de cotización, administración del catálogo, configuración operativa y tareas SEO.
+- **[estructura.md](./estructura.md)** — arquitectura, inventario de archivos, módulos, responsabilidades y criterios técnicos.
+- **[adt.md](./adt.md)** — notas históricas de diagnóstico y despliegue; revisar su vigencia antes de aplicar instrucciones antiguas.
+
+## Arquitectura resumida
+
+- `src/app`: páginas, layouts, endpoints, sitemap y robots.
+- `src/modules`: funcionalidades de landing, catálogo, cotización y administración.
+- `src/shared`: componentes compartidos, configuración empresarial y SEO.
+- `src/server`: autenticación y servicios exclusivos del servidor.
+- `src/types`: tipos compartidos.
+- `public`: recursos estáticos.
+
+## SEO y posicionamiento local
+
+La aplicación incorpora metadatos por página, Open Graph, Twitter Cards, datos estructurados JSON-LD de negocio local, texto alternativo descriptivo en imágenes, sitemap y robots. La ficha de Google Business Profile, la verificación en Search Console, las reseñas reales y la definición del dominio canónico requieren acciones del propietario del negocio.
+
+El SEO no garantiza una posición específica: debe mantenerse con contenido útil, datos empresariales correctos, buen rendimiento y seguimiento de resultados.
