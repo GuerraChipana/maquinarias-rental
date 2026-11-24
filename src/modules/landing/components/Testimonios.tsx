@@ -13,7 +13,7 @@ import {
   Tractor,
   Pickaxe
 } from 'lucide-react'
-import { testimonios } from '@/data/maquinarias'
+import { testimonios } from '@/modules/catalogo/data/maquinarias'
 
 /* ── COMPONENTES AUXILIARES ──────────────────────────────── */
 
