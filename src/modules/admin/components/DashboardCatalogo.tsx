@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Maquina, CategoriaMaquina } from '@/types';
-import { getMaquinariasHibrido, addMaquinaDb, deleteMaquinaDb, toggleDisponibleDb, addCategoriaDb } from '@/app/actions/db';
+import { getMaquinariasHibrido, addMaquinaDb, deleteMaquinaDb, toggleDisponibleDb, addCategoriaDb } from '@/modules/catalogo/actions/catalogo.actions';
 
 interface DashboardCatalogoProps {
   onLogout: () => void;
