@@ -221,7 +221,7 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
             <button onClick={() => setShowCatForm(!showCatForm)} className="flex w-full items-center justify-center gap-2 px-4 py-3 bg-slate-100 sm:w-auto" hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors">
               <Layers size={16} /> {showCatForm ? 'Cerrar Categoría' : '+ Nueva Categoría'}
             </button>
-            <button onClick={() => setShowForm(!showForm)} className="flex w-full items-center justify-center gap-2 px-5 py-3 bg-[#071324] sm:w-auto hover:bg-[#10243d] text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow shrink-0">
+            <button onClick={() => setShowForm(!showForm)} className="flex w-full items-center justify-center gap-2 px-5 py-3 bg-[#071324] hover:bg-[#10243d] text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow shrink-0 sm:w-auto">
               <Plus size={16} className={showForm ? 'rotate-45' : ''} /> {showForm ? 'Cerrar' : '+ Añadir Equipo'}
             </button>
           </div>
