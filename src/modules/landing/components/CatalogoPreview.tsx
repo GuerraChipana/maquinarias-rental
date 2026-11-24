@@ -10,9 +10,9 @@ import {
   Activity,
   ChevronRight
 } from 'lucide-react'
-import MachineCard from '@/components/ui/MachineCard'
-import { maquinarias as maquinariasLocal } from '@/data/maquinarias'
-import { useCotizacion } from '@/components/cotizacion/ModalCotizacion' 
+import MachineCard from '@/modules/catalogo/components/MachineCard'
+import { maquinarias as maquinariasLocal } from '@/modules/catalogo/data/maquinarias'
+import { useCotizacion } from '@/modules/cotizacion/components/ModalCotizacion' 
 import type { Maquina } from '@/types'
 
 const TODAS = 'Todas'
