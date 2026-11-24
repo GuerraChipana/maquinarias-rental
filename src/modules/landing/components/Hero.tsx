@@ -132,12 +132,15 @@ export default function Hero() {
             }}
             className="text-center lg:text-left font-[Montserrat,sans-serif]"
           >
-            <span className="block text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[0.9] tracking-[-0.03em]">
-              POTENCIA
+            <span className="block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-white leading-[0.95] tracking-[-0.03em]">
+              ALQUILER DE
             </span>
-            <span className="block text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.9] tracking-[-0.03em]">
-              <span className="text-[#F5A623]">SIN</span>
-              <span className="text-white"> LÍMITES</span>
+            <span className="block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-[0.95] tracking-[-0.03em]">
+              <span className="text-[#F5A623]">MAQUINARIA</span>
+              <span className="text-white"> PESADA</span>
+            </span>
+            <span className="mt-2 block text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white/90 leading-tight tracking-[-0.02em]">
+              EN PISCO E ICA
             </span>
           </motion.h1>
         </div>
@@ -149,8 +152,8 @@ export default function Hero() {
           transition={{ delay: 0.55, duration: 0.5 }}
           className="mt-6 max-w-lg text-center lg:text-left text-base lg:text-lg text-white/65 leading-relaxed font-[Montserrat,sans-serif]"
         >
-          Tractores, compactadoras, grúas y camiones orugas para tus proyectos
-          de construcción.
+          Excavadoras, retroexcavadoras, tractores, compactadoras, volquetes y
+          camiones cisterna para minería, construcción y obras civiles en Pisco e Ica.
         </motion.p>
 
         {/* CTAs */}
