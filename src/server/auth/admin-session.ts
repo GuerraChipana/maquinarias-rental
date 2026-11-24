@@ -1,12 +1,15 @@
 import crypto from "crypto";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 
 export const ADMIN_SESSION_COOKIE = "mavtec_admin_session";
 const SESSION_TTL_SECONDS = 8 * 60 * 60; // 8 horas
+const NONCE_PATTERN = /^[a-f0-9]{32}$/;
+const SIGNATURE_PATTERN = /^[a-f0-9]{64}$/;
 
 function getSigningKey(): Buffer | null {
   const secret = process.env.ADMIN_PASSWORD?.trim();
   if (!secret) return null;
+
   return crypto
     .createHash("sha256")
     .update(`mavtec-admin-session:${secret}`)
@@ -14,16 +17,21 @@ function getSigningKey(): Buffer | null {
 }
 
 export function verifyAdminPassword(password: string): boolean {
-  const correctPassword = process.env.ADMIN_PASSWORD;
-  if (!correctPassword || !password) {
+  const configuredPassword = process.env.ADMIN_PASSWORD;
+
+  if (
+    typeof password !== "string" ||
+    password.length > 1024 ||
+    !configuredPassword
+  ) {
     return false;
   }
 
   try {
     const inputBuffer = Buffer.from(password.trim(), "utf8");
-    const correctBuffer = Buffer.from(correctPassword.trim(), "utf8");
+    const correctBuffer = Buffer.from(configuredPassword.trim(), "utf8");
 
-    if (inputBuffer.length !== correctBuffer.length) {
+    if (inputBuffer.length === 0 || inputBuffer.length !== correctBuffer.length) {
       return false;
     }
 
@@ -49,18 +57,10 @@ export async function createAdminSessionCookie(): Promise<void> {
   const signature = signSessionData(payload, key);
   const token = `${payload}.${signature}`;
 
-  const reqHeaders = await headers();
-  const proto = reqHeaders.get("x-forwarded-proto");
-  const origin = reqHeaders.get("origin");
-  const isHttps =
-    proto === "https" ||
-    Boolean(origin?.startsWith("https://")) ||
-    process.env.VERCEL === "1";
-
   const cookieStore = await cookies();
   cookieStore.set(ADMIN_SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: isHttps,
+    secure: process.env.NODE_ENV === "production" || process.env.VERCEL === "1",
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_TTL_SECONDS,
@@ -84,20 +84,29 @@ export async function isAdminAuthenticated(): Promise<boolean> {
   if (parts.length !== 3) return false;
 
   const [expiresStr, nonce, signature] = parts;
+  if (
+    !/^\d+$/.test(expiresStr) ||
+    !NONCE_PATTERN.test(nonce) ||
+    !SIGNATURE_PATTERN.test(signature)
+  ) {
+    return false;
+  }
+
   const expiresAt = Number(expiresStr);
-  if (!Number.isFinite(expiresAt) || expiresAt <= Date.now() || !nonce) {
+  if (
+    !Number.isSafeInteger(expiresAt) ||
+    expiresAt <= Date.now() ||
+    expiresAt > Date.now() + SESSION_TTL_SECONDS * 1000
+  ) {
     return false;
   }
 
   const expectedSig = signSessionData(`${expiresStr}.${nonce}`, key);
-  try {
-    const sigBuf = Buffer.from(signature, "hex");
-    const expectedBuf = Buffer.from(expectedSig, "hex");
-    if (sigBuf.length === 0 || sigBuf.length !== expectedBuf.length) {
-      return false;
-    }
-    return crypto.timingSafeEqual(sigBuf, expectedBuf);
-  } catch {
-    return false;
-  }
+  const signatureBuffer = Buffer.from(signature, "hex");
+  const expectedBuffer = Buffer.from(expectedSig, "hex");
+
+  return (
+    signatureBuffer.length === expectedBuffer.length &&
+    crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+  );
 }
