@@ -1,10 +1,10 @@
-import export const revalidate = 60
-
-type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import CategoryCatalogView from '@/modules/catalogo/components/CategoryCatalogView'
 import { getMaquinariasHibrido } from '@/modules/catalogo/actions/catalogo.actions'
 import { SITE_URL } from '@/shared/config/seo'
+
+export const revalidate = 60
 
 type CategoryPageProps = {
   params: Promise<{ category: string }>
