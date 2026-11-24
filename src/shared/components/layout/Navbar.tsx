@@ -141,7 +141,10 @@ export default function Navbar() {
           >
             <img
               src="/as.png"
-              alt="MAVTEC Logo"
+              alt="Logotipo de MAVTEC E.I.R.L."
+              title="MAVTEC E.I.R.L. - Alquiler de maquinaria pesada en Pisco e Ica"
+              width={160}
+              height={60}
               className="h-12.5 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
             <div className="-ml-2 flex flex-col leading-none">
