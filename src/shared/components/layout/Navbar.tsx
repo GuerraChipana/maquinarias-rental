@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight, Phone, MapPin, Clock, Mail } from "lucide-react";
-import { EMPRESA, getTelefonoDisplay, getTelefonoHref } from "@/lib/constants";
-import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
-import NavDrawer from "@/components/sections/NavDrawer";
+import { EMPRESA, getTelefonoDisplay, getTelefonoHref } from "@/shared/config/empresa";
+import { useCotizacion } from "@/modules/cotizacion/components/ModalCotizacion";
+import NavDrawer from "@/shared/components/layout/NavDrawer";
 
 const NAV_LINKS = [
   { label: "Inicio",    href: "#inicio"    },
