@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -13,19 +17,15 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/cotizacion/*": ["./src/modules/cotizacion/components/*"],
-      "@/components/ui/*": ["./src/modules/catalogo/components/*"],
-      "@/components/admin/*": ["./src/modules/admin/components/*"],
-      "@/components/sections/*": ["./src/shared/components/layout/*"],
-      "@/data/*": ["./src/modules/catalogo/data/*"],
-      "@/lib/validations": ["./src/modules/cotizacion/schemas/cotizacion.schema.ts"],
-      "@/lib/constants": ["./src/shared/config/empresa.ts"],
-      "@/lib/admin-auth": ["./src/server/auth/admin-session.ts"],
-      "@/app/actions/db": ["./src/modules/catalogo/actions/catalogo.actions.ts"],
-      "@/app/actions/auth": ["./src/modules/admin/actions/auth.actions.ts"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
@@ -36,5 +36,7 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
