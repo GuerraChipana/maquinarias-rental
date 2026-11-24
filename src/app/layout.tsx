@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
-import ClientProviders from '@/components/providers/ClientProviders'
-import { EMPRESA } from '@/lib/constants'
+import ClientProviders from '@/shared/providers/ClientProviders'
+import { EMPRESA } from '@/shared/config/empresa'
 
 // ─── Fuentes ──────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     description: EMPRESA.descripcion,
     images: [
       {
-        url:    '/og-image.jpg',  // ⏳ Crear og-image.jpg 1200×630px en /public
+        url:    '/images/movimiento-de-tierra-2.png',
         width:  1200,
         height: 630,
         alt:    `${EMPRESA.nombre} - Maquinaria Pesada`,
