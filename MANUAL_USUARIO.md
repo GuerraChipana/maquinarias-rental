@@ -75,7 +75,7 @@ La confirmación depende de que Resend y las variables de correo estén correcta
 
 ## 4. Acceso al panel administrativo
 
-<badge>Ruta privada</badge>
+**Ruta privada**
 
 Abrir `/admin/catalogo` en el navegador. También se puede acceder desde la URL directa:
 
