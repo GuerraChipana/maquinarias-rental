@@ -40,7 +40,8 @@ maquinarias-rental/
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
-│   │   └── robots.ts
+│   │   ├── robots.ts
+│   │   └── sitemap.ts
 │   ├── modules/
 │   │   ├── admin/
 │   │   │   ├── actions/auth.actions.ts
