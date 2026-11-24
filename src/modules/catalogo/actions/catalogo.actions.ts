@@ -5,7 +5,7 @@ import { Maquina, CategoriaItem } from "@/types";
 import {
   maquinarias as baseLocal,
   categorias as categoriasLocal,
-} from "@/data/maquinarias";
+} from "@/modules/catalogo/data/maquinarias";
 import { isAdminAuthenticated } from "@/server/auth/admin-session";
 
 const SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL || "";
