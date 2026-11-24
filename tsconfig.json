@@ -13,13 +13,18 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/components/cotizacion/*": ["./src/modules/cotizacion/components/*"],
+      "@/components/ui/*": ["./src/modules/catalogo/components/*"],
+      "@/components/admin/*": ["./src/modules/admin/components/*"],
+      "@/components/sections/*": ["./src/shared/components/layout/*"],
+      "@/data/*": ["./src/modules/catalogo/data/*"],
+      "@/lib/validations": ["./src/modules/cotizacion/schemas/cotizacion.schema.ts"],
+      "@/lib/constants": ["./src/shared/config/empresa.ts"],
+      "@/lib/admin-auth": ["./src/server/auth/admin-session.ts"],
+      "@/app/actions/db": ["./src/modules/catalogo/actions/catalogo.actions.ts"]
     }
   },
   "include": [
