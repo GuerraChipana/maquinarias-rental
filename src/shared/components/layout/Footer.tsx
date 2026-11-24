@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
-import { useCotizacion } from '@/components/cotizacion/ModalCotizacion'
+import { useCotizacion } from '@/modules/cotizacion/components/ModalCotizacion'
 import {
   Phone,
   Mail,
@@ -19,7 +19,7 @@ import {
   getTelefonoDisplay,
   getTelefonoHref,
   getWhatsappUrl,
-} from '@/lib/constants'
+} from '@/shared/config/empresa'
 
 /* ── Estructura de Navegación ──────────────────────────────── */
 const NAV_COLS = [
