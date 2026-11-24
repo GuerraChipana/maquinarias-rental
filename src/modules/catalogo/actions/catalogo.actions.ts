@@ -6,7 +6,7 @@ import {
   maquinarias as baseLocal,
   categorias as categoriasLocal,
 } from "@/data/maquinarias";
-import { isAdminAuthenticated } from "@/lib/admin-auth";
+import { isAdminAuthenticated } from "@/server/auth/admin-session";
 
 const SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL || "";
 
