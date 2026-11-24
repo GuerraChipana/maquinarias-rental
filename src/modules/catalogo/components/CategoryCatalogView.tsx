@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ArrowLeft, AlertCircle } from "lucide-react";
-import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
+import { useCotizacion } from "@/modules/cotizacion/components/ModalCotizacion";
 import type { Maquina } from "@/types";
 
 function normalizarCategoria(valor: string): string {
