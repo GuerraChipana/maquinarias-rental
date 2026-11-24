@@ -66,7 +66,7 @@ El sitemap y las URLs canónicas se generan con el dominio indicado en `NEXT_PUB
 
 ### Protección del formulario de cotización
 
-El endpoint `/api/cotizacion` requiere Upstash Redis para aplicar un límite distribuido de **5 solicitudes por dirección IP cada 10 minutos**. Si Redis no está configurado o no responde, el endpoint falla de forma cerrada y no envía correos. También rechaza cuerpos mayores de 24 KiB, formatos distintos de JSON y campos o listas que superen los límites del esquema. Configurar `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` en el entorno de producción antes de habilitar el formulario.
+El endpoint `/api/cotizacion` valida el formato y el contenido de la solicitud, limita el cuerpo a 24 KiB y restringe la cantidad y longitud de los campos recibidos. No requiere servicios externos de almacenamiento o rate limiting.
 
 ## Documentación del proyecto
 
