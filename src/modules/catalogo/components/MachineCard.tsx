@@ -68,14 +68,16 @@ export default function MachineCard({
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="absolute inset-0 origin-center"
         >
-          <div
-            className="h-full w-full bg-cover bg-center"
-            style={{
-              backgroundImage: maquina.imagen
-                ? `url("${maquina.imagen}")`
-                : "none",
-            }}
-          />
+          {maquina.imagen ? (
+            <img
+              src={maquina.imagen}
+              alt={`${maquina.nombre} para alquiler en Pisco e Ica - MAVTEC`}
+              title={`${maquina.nombre} | Alquiler de maquinaria pesada en Pisco e Ica`}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          ) : null}
         </motion.div>
 
         {/* Gradiente sutil para que los badges se lean bien */}
