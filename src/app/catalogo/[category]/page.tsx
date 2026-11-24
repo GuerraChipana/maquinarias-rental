@@ -29,14 +29,22 @@ async function getCategoryData(categorySlug: string) {
     (item) => normalizeCategory(item.categoria) === normalizeCategory(categoria.id),
   )
 
+  if (maquinas.length === 0) return null
   return { categoria, maquinas }
 }
 
 export async function generateStaticParams() {
-  const { categorias } = await getMaquinariasHibrido()
+  const { maquinaria, categorias } = await getMaquinariasHibrido()
 
   return categorias
-    .filter((categoria) => categoria.id !== 'todas')
+    .filter(
+      (categoria) =>
+        categoria.id !== 'todas' &&
+        maquinaria.some(
+          (item) =>
+            normalizeCategory(item.categoria) === normalizeCategory(categoria.id),
+        ),
+    )
     .map((categoria) => ({ category: String(categoria.id) }))
 }
 
