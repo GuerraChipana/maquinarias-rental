@@ -15,10 +15,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronRight, ChevronLeft, CheckCircle2, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { cotizacionSchema, type CotizacionFormData, STEP1_FIELDS } from '@/lib/validations'
-import { maquinarias as maquinariasLocal, categorias as categoriasLocal } from '@/data/maquinarias'
-import SelectorMaquina from '@/components/cotizacion/SelectorMaquina'
-import FormCotizacion from '@/components/cotizacion/FormCotizacion'
+import { cotizacionSchema, type CotizacionFormData, STEP1_FIELDS } from '@/modules/cotizacion/schemas/cotizacion.schema'
+import { maquinarias as maquinariasLocal, categorias as categoriasLocal } from '@/modules/catalogo/data/maquinarias'
+import SelectorMaquina from '@/modules/cotizacion/components/SelectorMaquina'
+import FormCotizacion from '@/modules/cotizacion/components/FormCotizacion'
 import type { Maquina, CategoriaItem } from '@/types'
 
 /* ══════════════════════════════════════════════════════════════
