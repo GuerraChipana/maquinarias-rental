@@ -210,7 +210,7 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center group">
-              <img src="/as.png" alt="MAVTEC" className="h-9 w-auto object-contain" />
+              <img src="/as.png" alt="Logotipo de MAVTEC" title="MAVTEC E.I.R.L." width="120" height="36" className="h-9 w-auto object-contain" />
               <div className="-ml-1 flex flex-col leading-none">
                 <span className="text-white font-black text-lg tracking-tight uppercase">AVTEC</span>
                 <span className="text-[#F5A623] text-[8px] font-bold tracking-[0.25em] uppercase">ADMIN PANEL</span>
@@ -401,7 +401,7 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
                   <tr key={m.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-12 w-14 rounded-lg bg-cover bg-center border shrink-0 bg-slate-100 shadow-sm" style={{ backgroundImage: `url('${m.imagen}')` }} />
+                        <img src={m.imagen} alt={`Imagen de ${m.nombre}, equipo del catálogo MAVTEC`} title={`${m.nombre} | Inventario MAVTEC`} loading="lazy" decoding="async" className="h-12 w-14 rounded-lg border shrink-0 bg-slate-100 object-cover shadow-sm" />
                         <div>
                           <p className="font-bold text-slate-900 text-sm uppercase">{m.nombre}</p>
                           <span className="font-mono text-[10px] text-slate-400">ID: {m.id}</span>
