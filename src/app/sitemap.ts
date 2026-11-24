@@ -4,6 +4,10 @@ import { SITE_URL } from '@/shared/config/seo'
 
 export const revalidate = 3600
 
+function normalizeCategory(value: string): string {
+  return value.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().trim().replace(/[\\s_]+/g, '-')
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!SITE_URL) return []
 
@@ -12,7 +16,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter(
       (categoria) =>
         categoria.id !== 'todas' &&
-        maquinaria.some((item) => item.categoria === categoria.id),
+        maquinaria.some(
+          (item) => normalizeCategory(item.categoria) === normalizeCategory(categoria.id),
+        ),
     )
     .map((categoria) => ({
       url: new URL(
