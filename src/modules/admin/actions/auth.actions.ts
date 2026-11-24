@@ -4,7 +4,7 @@ import {
   verifyAdminPassword,
   createAdminSessionCookie,
   clearAdminSessionCookie,
-} from "@/lib/admin-auth";
+} from "@/server/auth/admin-session";
 
 export async function verificarPasswordAdmin(
   password: string,
