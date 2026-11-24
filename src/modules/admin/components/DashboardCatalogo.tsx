@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Plus, Eye, Tractor, CheckCircle2, AlertTriangle, Trash2, Search, HardHat, Loader2, RefreshCw, Layers
@@ -36,47 +36,24 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
   // Estado para crear nueva Categoría
   const [nuevaCat, setNuevaCat] = useState({ id: '', nombre: '' });
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsRefreshing(true);
     try {
       const data = await getMaquinariasHibrido();
-      if (data && typeof data === 'object' && !Array.isArray(data)) {
-        setMachines(data.maquinaria || []);
-        setCategoriasList(data.categorias || []);
-      } else if (Array.isArray(data)) {
-        setMachines(data);
-      }
+      setMachines(data.maquinaria);
+      setCategoriasList(data.categorias);
     } catch (error) {
       console.error("Error loading dashboard data:", error);
-      toast.error("No se pudo recargar el catálogo.");
+      toast.error("No se pudo cargar el catálogo.");
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    let active = true;
-    getMaquinariasHibrido()
-      .then((data) => {
-        if (!active) return;
-        if (data && typeof data === 'object' && !Array.isArray(data)) {
-          setMachines(data.maquinaria || []);
-          setCategoriasList(data.categorias || []);
-        } else if (Array.isArray(data)) {
-          setMachines(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error loading dashboard data:", error);
-      })
-      .finally(() => {
-        if (active) setIsLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+    void loadData();
+  }, [loadData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const target = e.target as HTMLInputElement;
