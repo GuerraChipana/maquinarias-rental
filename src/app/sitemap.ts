@@ -5,7 +5,12 @@ import { SITE_URL } from '@/shared/config/seo'
 export const revalidate = 3600
 
 function normalizeCategory(value: string): string {
-  return value.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().trim().replace(/[\\s_]+/g, '-')
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, '-')
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
