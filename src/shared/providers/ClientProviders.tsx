@@ -1,6 +1,6 @@
 'use client';
 
-import { CotizacionProvider } from '@/components/cotizacion/ModalCotizacion';
+import { CotizacionProvider } from '@/modules/cotizacion/components/ModalCotizacion';
 import { Toaster } from 'sonner';
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
