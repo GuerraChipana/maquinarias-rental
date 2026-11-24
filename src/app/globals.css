@@ -1,26 +1,249 @@
 @import "tailwindcss";
 
+/* Tokens globales y tipografía del sitio */
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
+  --page-gutter: clamp(1rem, 4vw, 5rem);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-width: 320px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+video,
+canvas,
+svg,
+iframe {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  min-width: 0;
+}
+
+a {
+  overflow-wrap: anywhere;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span {
+  overflow-wrap: break-word;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+iframe {
+  display: block;
+}
+
+:focus-visible {
+  outline: 3px solid #f5a623;
+  outline-offset: 3px;
+}
+
+::selection {
+  color: #071324;
+  background: #f5a623;
+}
+
+/* Evita que contenido técnico, URLs o tablas provoquen scroll horizontal. */
+pre,
+code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+table {
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  html {
+    scroll-padding-top: 4.5rem;
+  }
+
+  /* Los elementos flexibles y de grid deben poder encogerse. */
+  main,
+  aside,
+  article,
+  section,
+  header,
+  footer,
+  nav,
+  [class*="grid"],
+  [class*="flex"] {
+    min-width: 0;
+  }
+
+  /* Mantiene las imágenes dentro de sus tarjetas y contenedores. */
+  img,
+  video,
+  iframe {
+    max-width: 100%;
+  }
+
+  /* Evita que botones y campos pequeños sean difíciles de tocar. */
+  button,
+  [role="button"],
+  input,
+  select {
+    min-height: 2.75rem;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Evita desbordes por palabras largas en tarjetas y datos de contacto. */
+  p,
+  a,
+  span,
+  label {
+    overflow-wrap: anywhere;
+  }
+
+  /* Reduce las animaciones de desplazamiento en pantallas táctiles. */
+  [data-scroll-behavior="smooth"] {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (max-width: 639px) {
+  h1 {
+    font-size: clamp(2rem, 9vw, 3rem);
+    line-height: 1.04;
+  }
+
+  h2 {
+    line-height: 1.12;
+  }
+
+  /* En teléfonos estrechos, las rejillas de tres o cuatro columnas
+     pasan a una distribución legible de una o dos columnas. */
+  .grid.grid-cols-3,
+  .grid.grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .grid.grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Las tarjetas no deben conservar anchos mínimos que fuercen scroll. */
+  [class*="min-w-"] {
+    min-width: 0;
+  }
+
+  /* Controles de navegación y botones con área táctil suficiente. */
+  button,
+  a[role="button"] {
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --page-gutter: 1rem;
+  }
+
+  .grid.grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Evita que el espaciado tipográfico rompa títulos en móviles compactos. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.035em;
+  }
+}
+
+/* Tablets y portátiles: garantiza que las columnas puedan contraerse. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .grid {
+    min-width: 0;
+  }
+
+  [class*="max-w-"] {
+    max-width: 100%;
+  }
+}
+
+/* Accesibilidad: respeta la preferencia del sistema por menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
