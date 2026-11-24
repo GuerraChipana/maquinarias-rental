@@ -14,7 +14,7 @@ import {
   Loader2,
   Wrench,
 } from 'lucide-react';
-import type { CotizacionFormData } from '@/lib/validations';
+import type { CotizacionFormData } from '@/modules/cotizacion/schemas/cotizacion.schema';
 import type { Maquina, CategoriaItem } from '@/types';
 
 function Field({
