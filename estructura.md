@@ -10,7 +10,7 @@
 - **`src/server`**: lógica exclusiva del servidor, autenticación y generación de correos.
 - **`src/types`**: contratos e interfaces TypeScript compartidos.
 - **`public`**: imágenes, iconos y demás recursos estáticos servidos directamente.
-- **Raíz**: configuración, dependencias, instrucciones de agentes y documentación.
+- **Raíz**: configuración, dependencias, instrucciones de agentes y documentación. `MANUAL_USUARIO.md` explica el uso del sitio y del panel; este archivo describe la arquitectura técnica.
 
 ## 2. Estructura consolidada
 
@@ -76,13 +76,16 @@ maquinarias-rental/
 │   │   │   ├── Footer.tsx
 │   │   │   ├── NavDrawer.tsx
 │   │   │   └── Navbar.tsx
-│   │   ├── config/empresa.ts
+│   │   ├── config/
+│   │   │   ├── empresa.ts
+│   │   │   └── seo.ts
 │   │   └── providers/ClientProviders.tsx
 │   └── types/index.ts
 ├── .gitignore
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── README.md
+├── MANUAL_USUARIO.md
 ├── adt.md
 ├── eslint.config.mjs
 ├── next.config.ts
@@ -106,6 +109,8 @@ maquinarias-rental/
 | `shared` | Navegación, pie de página, proveedor global y datos de empresa |
 | `server` | Sesiones, autenticación y plantillas de correo |
 | `types` | Tipos compartidos entre cliente, servidor y API |
+| `shared/config/seo.ts` | Dominio canónico validado y generación de URLs absolutas para SEO |
+| `app/sitemap.ts` y `app/robots.ts` | Descubrimiento e instrucciones de rastreo para buscadores |
 | `public` | Recursos estáticos con rutas públicas |
 
 ## 4. Resolución de imports
@@ -135,3 +140,21 @@ Los imports deben apuntar directamente a las rutas canónicas:
 ## 6. Verificación pendiente
 
 La conexión con GitHub permite revisar y modificar los archivos, pero no ejecuta localmente `npm run build` ni `npm run lint`. Después de aplicar los cambios, ambos comandos deben ejecutarse en un entorno con dependencias instaladas y las variables de entorno necesarias. El resultado de compilación no debe considerarse aprobado hasta que esos comandos terminen correctamente.
+
+
+## 7. SEO técnico implementado
+
+- Metadatos globales en `src/app/layout.tsx` y metadatos específicos para `/catalogo`.
+- Configuración del dominio canónico en `src/shared/config/seo.ts`, mediante `NEXT_PUBLIC_SITE_URL`.
+- Datos estructurados JSON-LD de tipo `LocalBusiness` y `WebSite`.
+- Sitemap XML generado por `src/app/sitemap.ts`.
+- Reglas de rastreo mediante `src/app/robots.ts`, excluyendo administración y API.
+- Texto alternativo y títulos descriptivos en imágenes de maquinaria, servicios, testimonios y panel.
+- Inventario inicial del catálogo renderizado desde el servidor para que los nombres y descripciones estén presentes en el HTML inicial.
+
+El dominio real debe configurarse antes de enviar el sitemap a Google Search Console. La configuración no inventa ni presupone un dominio de producción.
+
+## 8. Documentación relacionada
+
+- `MANUAL_USUARIO.md`: navegación del sitio, proceso de cotización, panel administrativo, variables de entorno, operación, mantenimiento y tareas de posicionamiento.
+- `README.md`: instrucciones generales del proyecto y ejecución local.
