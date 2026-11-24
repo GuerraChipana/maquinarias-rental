@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { X, ChevronRight, HardHat, Phone, ShieldCheck, MapPin, Radio } from "lucide-react";
-import { getTelefonoDisplay, getTelefonoHref } from "@/lib/constants";
+import { getTelefonoDisplay, getTelefonoHref } from "@/shared/config/empresa";
 
 type NavLink = { label: string; href: string };
 
