@@ -151,10 +151,15 @@ export default function CategoryCatalogPage() {
               className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
             >
               <div>
-                <div
-                  className="h-52 w-full bg-slate-100 bg-cover bg-center relative"
-                  style={{ backgroundImage: `url('${item.imagen}')` }}
-                >
+                <div className="relative h-52 w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={item.imagen}
+                    alt={`${item.nombre} para alquiler en Pisco e Ica - MAVTEC`}
+                    title={`${item.nombre} | Catálogo de maquinaria MAVTEC`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
                   <span
                     className={`absolute top-3 right-3 px-3 py-1 text-[10px] font-bold uppercase rounded-full shadow ${item.disponible ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}
                   >
