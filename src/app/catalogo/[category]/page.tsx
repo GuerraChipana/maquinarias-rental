@@ -1,4 +1,6 @@
-import type { Metadata } from 'next'
+import export const revalidate = 60
+
+type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import CategoryCatalogView from '@/modules/catalogo/components/CategoryCatalogView'
 import { getMaquinariasHibrido } from '@/modules/catalogo/actions/catalogo.actions'
