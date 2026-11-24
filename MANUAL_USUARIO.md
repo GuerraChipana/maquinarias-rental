@@ -184,6 +184,13 @@ La aplicación incorpora metadatos por página, datos estructurados de negocio l
 8. Añadir páginas o artículos útiles sobre los servicios, equipos, proyectos y zonas atendidas, evitando repetir palabras clave artificialmente.
 9. Medir clics, impresiones, consultas y páginas indexadas en Search Console.
 
+**Datos que deben confirmarse antes de completar el SEO local:**
+
+- La dirección disponible en la configuración identifica la zona de Túpac Amaru Inca, Pisco, pero no una calle y número verificables. Por eso los datos estructurados indican Pisco e Ica y no inventan una dirección exacta.
+- La configuración empresarial declara atención 24/7, mientras que el indicador de estado de la sección Contacto calcula atención de lunes a sábado de 07:00 a 18:00. Confirmar el horario real y unificarlo antes de publicar horarios en Google Business Profile o datos estructurados.
+- Los enlaces de Facebook e Instagram de la configuración son valores genéricos de ejemplo. Reemplazarlos por perfiles oficiales antes de publicarlos o agregarlos a datos estructurados.
+- La sesión administrativa está diseñada para expirar después de 8 horas.
+
 La etiqueta `alt` describe la imagen para accesibilidad y motores de búsqueda. El atributo `title` puede mostrar información adicional al pasar el cursor, pero no sustituye al texto alternativo ni garantiza mejor posicionamiento.
 
 ## 9. Solución de problemas frecuentes
