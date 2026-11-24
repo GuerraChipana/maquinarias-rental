@@ -34,6 +34,7 @@ maquinarias-rental/
 │   │   │   ├── cotizacion/route.ts
 │   │   │   └── maquinas/route.ts
 │   │   ├── catalogo/
+│   │   │   ├── [category]/page.tsx
 │   │   │   ├── layout.tsx
 │   │   │   └── page.tsx
 │   │   ├── favicon.ico
@@ -152,6 +153,7 @@ La conexión con GitHub permite revisar y modificar los archivos, pero no ejecut
 - Reglas de rastreo mediante `src/app/robots.ts`, excluyendo administración y API.
 - Texto alternativo y títulos descriptivos en imágenes de maquinaria, servicios, testimonios y panel.
 - Inventario inicial del catálogo renderizado desde el servidor para que los nombres y descripciones estén presentes en el HTML inicial.
+- Páginas indexables por categoría en `/catalogo/[category]`, con título, descripción, URL canónica y Open Graph propios; el sitemap incluye las categorías que tienen equipos registrados.
 
 El dominio real debe configurarse antes de enviar el sitemap a Google Search Console. La configuración no inventa ni presupone un dominio de producción.
 
