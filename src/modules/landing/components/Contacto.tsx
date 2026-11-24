@@ -20,7 +20,7 @@ import {
   getTelefonoDisplay,
   getTelefonoHref,
   getWhatsappUrl,
-} from '@/lib/constants'
+} from '@/shared/config/empresa'
 
 /* ── Hook de Operatividad (Lógica de Horarios) ───────────────── */
 function useCurrentTimeStatus() {
