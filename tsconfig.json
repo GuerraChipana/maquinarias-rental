@@ -24,7 +24,8 @@
       "@/lib/validations": ["./src/modules/cotizacion/schemas/cotizacion.schema.ts"],
       "@/lib/constants": ["./src/shared/config/empresa.ts"],
       "@/lib/admin-auth": ["./src/server/auth/admin-session.ts"],
-      "@/app/actions/db": ["./src/modules/catalogo/actions/catalogo.actions.ts"]
+      "@/app/actions/db": ["./src/modules/catalogo/actions/catalogo.actions.ts"],
+      "@/app/actions/auth": ["./src/modules/admin/actions/auth.actions.ts"]
     }
   },
   "include": [
