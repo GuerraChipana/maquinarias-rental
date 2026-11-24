@@ -183,7 +183,7 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
   return (
     <div className="min-h-screen bg-slate-50 font-[Montserrat,sans-serif] text-slate-800">
       {/* HEADER MAVTEC ADMIN */}
-      <header className="sticky top-0 z-30 bg-[#040a12] border-b border-white/10 px-6 py-4 shadow-xl">
+      <header className="sticky top-0 z-30 bg-[#040a12] border-b border-white/10 px-4 sm:px-6 py-4 shadow-xl">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center group">
@@ -194,7 +194,7 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
               </div>
             </Link>
           </div>
-          <div className="flex items-center gap-3 text-xs">
+          <div className="flex w-full flex-wrap items-center justify-center gap-2 text-xs sm:w-auto sm:justify-end sm:gap-3">
             <button onClick={loadData} title="Recargar desde Excel" className="p-2 text-white/60 hover:text-[#F5A623] transition-colors">
               <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
             </button>
@@ -217,11 +217,11 @@ export default function DashboardCatalogo({ onLogout }: DashboardCatalogoProps) 
               <CheckCircle2 size={13} /> Sincronización BIDIRECCIONAL activa con Google Sheets
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowCatForm(!showCatForm)} className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors">
+          <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+            <button onClick={() => setShowCatForm(!showCatForm)} className="flex w-full items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors sm:w-auto">
               <Layers size={16} /> {showCatForm ? 'Cerrar Categoría' : '+ Nueva Categoría'}
             </button>
-            <button onClick={() => setShowForm(!showForm)} className="flex items-center justify-center gap-2 px-5 py-3 bg-[#071324] hover:bg-[#10243d] text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow shrink-0">
+            <button onClick={() => setShowForm(!showForm)} className="flex w-full items-center justify-center gap-2 px-5 py-3 bg-[#071324] hover:bg-[#10243d] text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow shrink-0 sm:w-auto">
               <Plus size={16} className={showForm ? 'rotate-45' : ''} /> {showForm ? 'Cerrar' : '+ Añadir Equipo'}
             </button>
           </div>

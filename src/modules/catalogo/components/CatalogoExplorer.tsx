@@ -242,7 +242,7 @@ export default function CatalogPage({
                   </span>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="max-h-[50vh] space-y-1.5 overflow-y-auto overscroll-contain pr-1 lg:max-h-[65vh]">
                   {categorias.map((cat, idx) => {
                     const isActive = filtro === cat.id;
                     const cantidad = cat.id === TODAS ? maquinarias.length : (conteoPorCategoria[cat.id] || 0);
