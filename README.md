@@ -64,6 +64,10 @@ Configurar en el entorno local o en el proveedor de despliegue. No guardar secre
 
 El sitemap y las URLs canónicas se generan con el dominio indicado en `NEXT_PUBLIC_SITE_URL`. Definirlo antes de registrar el sitio en Google Search Console.
 
+### Protección del formulario de cotización
+
+El endpoint `/api/cotizacion` requiere Upstash Redis para aplicar un límite distribuido de **5 solicitudes por dirección IP cada 10 minutos**. Si Redis no está configurado o no responde, el endpoint falla de forma cerrada y no envía correos. También rechaza cuerpos mayores de 24 KiB, formatos distintos de JSON y campos o listas que superen los límites del esquema. Configurar `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` en el entorno de producción antes de habilitar el formulario.
+
 ## Documentación del proyecto
 
 - **[MANUAL_USUARIO.md](./MANUAL_USUARIO.md)** — guía del visitante, proceso de cotización, administración del catálogo, configuración operativa y tareas SEO.
