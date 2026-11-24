@@ -3,7 +3,7 @@
 import { useFormContext } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { User, Building2, CreditCard, Phone, Mail, MessageSquare } from 'lucide-react'
-import type { CotizacionFormData } from '@/lib/validations'
+import type { CotizacionFormData } from '@/modules/cotizacion/schemas/cotizacion.schema'
 
 /* ── Campo genérico con label y error ───────────────────────── */
 function Field({
