@@ -15,9 +15,9 @@ import {
   MessageSquare,
   ShieldCheck,
 } from "lucide-react";
-import MachineCard from "@/components/ui/MachineCard";
-import { useCotizacion } from "@/components/cotizacion/ModalCotizacion";
-import { getWhatsappUrl } from "@/lib/constants";
+import MachineCard from "@/modules/catalogo/components/MachineCard";
+import { useCotizacion } from "@/modules/cotizacion/components/ModalCotizacion";
+import { getWhatsappUrl } from "@/shared/config/empresa";
 import type { Maquina } from "@/types";
 
 // Interfaz local para manejar la nueva estructura de categorías que viene del Sheet
