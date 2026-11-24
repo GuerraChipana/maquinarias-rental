@@ -4,11 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Lock, KeyRound, ArrowRight, ArrowLeft } from "lucide-react";
-import DashboardCatalogo from "@/components/admin/DashboardCatalogo";
+import DashboardCatalogo from "@/modules/admin/components/DashboardCatalogo";
 import {
   verificarPasswordAdmin,
   cerrarSesionAdmin,
-} from "@/app/actions/auth";
+} from "@/modules/admin/actions/auth.actions";
 
 interface AdminCatalogClientProps {
   initialAuthenticated: boolean;
