@@ -48,7 +48,7 @@ El formulario se abre desde los botones de cotización de la web o desde el bot�
 4. Indicar la ubicación de la obra.
 5. Avanzar al paso de contacto.
 
-La validación del formulario exige al menos un equipo y una cantidad válida. La fecha de fin no puede ser anterior a la fecha de inicio.
+La validación del formulario exige al menos un equipo y una cantidad de entre 1 y 20 unidades por equipo. La fecha de fin no puede ser anterior a la fecha de inicio.
 
 ### Paso 2: datos de contacto
 
@@ -172,7 +172,7 @@ Después de cambiar variables de entorno, se debe generar un nuevo despliegue pa
 
 ## 8. SEO: tareas del responsable del sitio
 
-La aplicación incorpora metadatos, datos estructurados de negocio local, etiquetas descriptivas para imágenes, `robots.txt` y un sitemap. Para completar el posicionamiento en producción:
+La aplicación incorpora metadatos por página, datos estructurados de negocio local, etiquetas descriptivas para imágenes, páginas específicas por categoría, `robots.txt` y un sitemap que incluye las categorías con equipos registrados. Para completar el posicionamiento en producción:
 
 1. Definir el dominio oficial y configurar `NEXT_PUBLIC_SITE_URL` con la versión canónica elegida (con o sin `www`).
 2. Verificar el dominio en Google Search Console.
