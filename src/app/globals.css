@@ -134,9 +134,7 @@ table {
   section,
   header,
   footer,
-  nav,
-  [class*="grid"],
-  [class*="flex"] {
+  nav {
     min-width: 0;
   }
 
@@ -194,11 +192,6 @@ table {
 
   .grid.grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  /* Las tarjetas no deben conservar anchos mínimos que fuercen scroll. */
-  [class*="min-w-"] {
-    min-width: 0;
   }
 
   /* Controles de navegación y botones con área táctil suficiente. */
