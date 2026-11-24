@@ -97,7 +97,6 @@ const localBusinessJsonLd = {
   email: EMPRESA.contacto.email,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Túpac Amaru Inca',
     addressLocality: 'Pisco',
     addressRegion: 'Ica',
     addressCountry: 'PE',
