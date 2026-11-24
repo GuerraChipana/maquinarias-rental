@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion'
 // 1. Importamos tus datos
-import { servicios } from '@/data/maquinarias'
-import { useCotizacion } from '@/components/cotizacion/ModalCotizacion'
+import { servicios } from '@/modules/catalogo/data/maquinarias'
+import { useCotizacion } from '@/modules/cotizacion/components/ModalCotizacion'
 import type { Servicio } from '@/types' 
 
 // 2. Importamos todos los iconos que vayamos a usar
