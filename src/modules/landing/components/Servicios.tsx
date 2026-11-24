@@ -56,7 +56,10 @@ function ServiceModule({
         variants={{ initial: { scale: 1 }, hover: { scale: 1.05 } }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         src={servicio.imagen}
-        alt={servicio.titulo}
+        alt={`${servicio.titulo} en Pisco e Ica - MAVTEC`}
+        title={`${servicio.titulo} | Servicios de MAVTEC en Pisco e Ica`}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover opacity-70"
       />
 
