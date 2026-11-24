@@ -3,7 +3,6 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { buildEmailOwner, buildEmailCliente } from "@/server/email/cotizacion-templates";
 import { cotizacionSchema, itemCotizacionSchema } from "@/modules/cotizacion/schemas/cotizacion.schema";
-import { checkCotizacionRateLimit } from "@/server/security/cotizacion-rate-limit";
 import type { CotizacionPayload } from "@/types";
 
 export const runtime = "nodejs";
@@ -67,28 +66,6 @@ async function readLimitedBody(request: Request): Promise<string | null> {
 
 export async function POST(request: Request) {
   try {
-    const rateLimit = await checkCotizacionRateLimit(request.headers);
-
-    // Fallar de forma cerrada evita enviar correos si el control distribuido
-    // no está configurado o Redis no está disponible.
-    if (!rateLimit) {
-      console.error("Protección de cotizaciones no disponible: revisar Upstash Redis.");
-      return NextResponse.json(
-        { success: false, error: "El servicio de cotizaciones no está disponible temporalmente." },
-        { status: 503 },
-      );
-    }
-
-    if (!rateLimit.allowed) {
-      return NextResponse.json(
-        { success: false, error: "Has enviado demasiadas solicitudes. Inténtalo nuevamente más tarde." },
-        {
-          status: 429,
-          headers: { "Retry-After": String(rateLimit.retryAfter) },
-        },
-      );
-    }
-
     const contentType = request.headers.get("content-type") || "";
     if (!contentType.toLowerCase().includes("application/json")) {
       return NextResponse.json(
