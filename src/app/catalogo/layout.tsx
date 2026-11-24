@@ -1,5 +1,5 @@
-import Navbar from '@/components/sections/Navbar';
-import Footer from '@/components/sections/Footer';
+import Navbar from '@/shared/components/layout/Navbar';
+import Footer from '@/shared/components/layout/Footer';
 
 export default function CatalogoLayout({
   children,
@@ -21,4 +21,3 @@ export default function CatalogoLayout({
     </div>
   );
 }
-

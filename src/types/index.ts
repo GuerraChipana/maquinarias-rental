@@ -11,7 +11,8 @@ export type CategoriaMaquina =
   | "grua"
   | "camion-cisterna"
   | "retroexcavadora"
-  | "volquete";
+  | "volquete"
+  | (string & {});
 
 export interface Maquina {
   id: string;

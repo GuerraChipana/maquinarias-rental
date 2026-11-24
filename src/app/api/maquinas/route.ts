@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getMaquinariasHibrido } from '@/app/actions/db';
+import { getMaquinariasHibrido } from '@/modules/catalogo/actions/catalogo.actions';
 
 // ESTA LÍNEA ES CLAVE: Fuerza a Next.js a no cachear esta ruta en Vercel
 export const dynamic = 'force-dynamic';
