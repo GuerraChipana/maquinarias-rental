@@ -110,9 +110,9 @@ maquinarias-rental/
 
 ## 4. Resolución de imports
 
-El alias principal `@/*` apunta a `src/*`. Se añadieron rutas de compatibilidad en `tsconfig.json` para imports heredados que quedaron tras la migración a `src/modules` (por ejemplo, modal de cotización, datos del catálogo y acciones administrativas).
+El alias único `@/*` apunta a `src/*`. Los imports heredados detectados durante la migración fueron actualizados a sus ubicaciones canónicas; no se mantienen alias de compatibilidad para rutas antiguas.
 
-Estas rutas son una medida de transición para evitar romper consumidores existentes. En futuras modificaciones, los imports nuevos deben apuntar directamente a las rutas canónicas:
+Los imports deben apuntar directamente a las rutas canónicas:
 
 - `@/modules/cotizacion/components/ModalCotizacion`
 - `@/modules/catalogo/components/MachineCard`
